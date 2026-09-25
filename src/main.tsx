@@ -5,20 +5,34 @@ import { ConvexAuthProvider } from "@convex-dev/auth/react";
 import { ConvexReactClient } from "convex/react";
 import React, { StrictMode, useEffect, lazy, Suspense } from "react";
 import { createRoot } from "react-dom/client";
-import { BrowserRouter, Route, Routes, useLocation } from "react-router";
+import { BrowserRouter, Route, Routes, useLocation, Outlet } from "react-router";
 import "./index.css";
+import { CartProvider } from "@/lib/cart";
+import { WishlistProvider } from "@/lib/wishlist";
+import { Navbar } from "@/components/Navbar";
+import { Footer } from "@/components/Footer";
+import { CartDrawer } from "@/components/CartDrawer";
 
 // Lazy load route components for better code splitting
 const Landing = lazy(() => import("./pages/Landing.tsx"));
 const AuthPage = lazy(() => import("./pages/Auth.tsx"));
 const Dashboard = lazy(() => import("./pages/Dashboard.tsx"));
 const NotFound = lazy(() => import("./pages/NotFound.tsx"));
+const Shop = lazy(() => import("./pages/Shop.tsx"));
+const ProductDetail = lazy(() => import("./pages/ProductDetail.tsx"));
+const Guide = lazy(() => import("./pages/Guide.tsx"));
+const Cart = lazy(() => import("./pages/Cart.tsx"));
+const Checkout = lazy(() => import("./pages/Checkout.tsx"));
+const Wishlist = lazy(() => import("./pages/Wishlist.tsx"));
+const Account = lazy(() => import("./pages/Account.tsx"));
 
 // Simple loading fallback for route transitions
 function RouteLoading() {
   return (
-    <div className="min-h-screen flex items-center justify-center">
-      <div className="animate-pulse text-muted-foreground">Loading...</div>
+    <div className="flex min-h-[70vh] items-center justify-center">
+      <div className="clay-card animate-pulse rounded-full px-8 py-4 text-sm font-semibold text-muted-foreground">
+        Loading…
+      </div>
     </div>
   );
 }
@@ -81,7 +95,24 @@ class RootErrorBoundary extends React.Component<
 
 const convex = new ConvexReactClient(import.meta.env.VITE_CONVEX_URL as string);
 
+function ShopLayout() {
+  const location = useLocation();
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: "instant" });
+  }, [location.pathname]);
 
+  return (
+    <div className="flex min-h-dvh flex-col">
+      <Navbar />
+      <div className="flex-1">
+        <Suspense fallback={<RouteLoading />}>
+          <Outlet />
+        </Suspense>
+      </div>
+      <Footer />
+    </div>
+  );
+}
 
 function RouteSyncer() {
   const location = useLocation();
@@ -106,7 +137,6 @@ function RouteSyncer() {
   return null;
 }
 
-
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <RootErrorBoundary>
@@ -114,28 +144,42 @@ createRoot(document.getElementById("root")!).render(
         <VlyToolbar />
       </ToolbarErrorBoundary>
       <ConvexAuthProvider client={convex}>
-        <BrowserRouter>
-          <RouteSyncer />
-          <Suspense fallback={<RouteLoading />}>
-            <Routes>
-              <Route path="/" element={<Landing />} />
-              <Route
-                path="/auth"
-                element={<AuthPage redirectAfterAuth="/dashboard" />}
-              />
-              <Route
-                path="/dashboard"
-                element={
-                  <RequireAuth>
-                    <Dashboard />
-                  </RequireAuth>
-                }
-              />
-              <Route path="*" element={<NotFound />} />
-            </Routes>
-          </Suspense>
-        </BrowserRouter>
-        <Toaster />
+        <CartProvider>
+          <WishlistProvider>
+            <BrowserRouter>
+              <RouteSyncer />
+              <Suspense fallback={<RouteLoading />}>
+                <Routes>
+                  <Route element={<ShopLayout />}>
+                    <Route path="/" element={<Landing />} />
+                    <Route path="/shop" element={<Shop />} />
+                    <Route path="/product/:slug" element={<ProductDetail />} />
+                    <Route path="/guide" element={<Guide />} />
+                    <Route path="/cart" element={<Cart />} />
+                    <Route path="/checkout" element={<Checkout />} />
+                    <Route path="/wishlist" element={<Wishlist />} />
+                    <Route path="/account" element={<Account />} />
+                  </Route>
+                  <Route
+                    path="/auth"
+                    element={<AuthPage redirectAfterAuth="/account" />}
+                  />
+                  <Route
+                    path="/dashboard"
+                    element={
+                      <RequireAuth>
+                        <Dashboard />
+                      </RequireAuth>
+                    }
+                  />
+                  <Route path="*" element={<NotFound />} />
+                </Routes>
+              </Suspense>
+              <CartDrawer />
+            </BrowserRouter>
+            <Toaster />
+          </WishlistProvider>
+        </CartProvider>
       </ConvexAuthProvider>
     </RootErrorBoundary>
   </StrictMode>,

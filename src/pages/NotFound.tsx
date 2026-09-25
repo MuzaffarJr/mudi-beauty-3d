@@ -1,26 +1,30 @@
-import { motion } from "framer-motion";
+import { Link } from "react-router";
+import { Button } from "@/components/ui/button";
+import { Sparkles } from "lucide-react";
 
-export default function NotFound() {
+export function NotFound() {
   return (
-    <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      transition={{ duration: 0.5 }}
-      className="min-h-screen flex flex-col"
-    >
-
-      
-      {/* Main Content */}
-      <div className="flex-1 flex flex-col items-center justify-center">
-        <div className="max-w-5xl mx-auto relative px-4">
-          <div className="flex items-center justify-center min-h-[200px]">
-            <div className="text-center">
-              <h1 className="text-4xl font-bold text-gray-900 mb-4">404</h1>
-              <p className="text-lg text-gray-600">Page Not Found</p>
-            </div>
-          </div>
+    <main className="px-3 pb-6 pt-10 sm:px-5">
+      <div className="clay-card mx-auto flex max-w-2xl flex-col items-center gap-5 rounded-[calc(var(--radius)+0.8rem)] p-12 text-center">
+        <span className="clay-blob flex size-20 items-center justify-center bg-peach">
+          <Sparkles className="size-8 text-charcoal/60" aria-hidden />
+        </span>
+        <h1 className="font-display text-4xl font-semibold text-charcoal">404</h1>
+        <p className="max-w-[44ch] text-sm leading-relaxed text-muted-foreground">
+          This page wandered off the shelf. Let's get you back to the good
+          stuff — Korean beauty awaits.
+        </p>
+        <div className="flex flex-wrap justify-center gap-3">
+          <Button asChild className="clay-btn h-12 px-7 text-sm font-bold">
+            <Link to="/">Back to home</Link>
+          </Button>
+          <Button asChild variant="ghost" className="clay-btn-soft h-12 px-6 text-sm font-semibold">
+            <Link to="/shop">Browse the shop</Link>
+          </Button>
         </div>
       </div>
-    </motion.div>
+    </main>
   );
 }
+
+export default NotFound;
