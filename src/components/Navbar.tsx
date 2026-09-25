@@ -67,7 +67,7 @@ export function Navbar() {
             M
           </span>
           <span className="font-display text-lg font-semibold tracking-tight text-charcoal">
-            MuDi <span className="text-primary">Beauty</span>
+            MuDi <span className="text-primary">Beauty 3D</span>
           </span>
         </Link>
 
@@ -188,7 +188,7 @@ export function Navbar() {
               <SheetHeader className="px-5 pb-2 pt-6 text-left">
                 <SheetTitle className="flex items-center gap-2 font-display text-lg">
                   <Sparkles className="size-4 text-primary" />
-                  MuDi Beauty
+                  MuDi Beauty 3D
                 </SheetTitle>
               </SheetHeader>
               <nav aria-label="Mobile navigation" className="flex flex-col gap-1.5 px-5 py-2">
@@ -218,7 +218,7 @@ export function Navbar() {
                 </Link>
               </nav>
               <p className="mt-auto px-5 pb-6 text-xs text-muted-foreground">
-                Korean cosmetics, delivered in Uzbekistan 🇺🇿
+                Korean cosmetics, delivered across Uzbekistan
               </p>
             </SheetContent>
           </Sheet>

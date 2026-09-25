@@ -1,11 +1,11 @@
 {
-  "name": "freebuff.com application",
-  "short_name": "freebuff.com",
-  "description": "freebuff.com application",
+  "name": "MuDi Beauty 3D",
+  "short_name": "MuDi Beauty",
+  "description": "A premium 3D K-beauty store for Uzbekistan — product discovery, skincare guidance, and online shopping.",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#ffffff",
-  "theme_color": "#000000",
+  "background_color": "#f7f0e6",
+  "theme_color": "#f7f0e6",
   "icons": [
     {
       "src": "/logo.svg",

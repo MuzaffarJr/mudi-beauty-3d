@@ -24,9 +24,10 @@ const COLUMNS = [
     title: "Support",
     links: [
       { label: "Account", to: "/account" },
+      { label: "Dashboard", to: "/dashboard" },
       { label: "Delivery & returns", to: "/account" },
       { label: "Authenticity", to: "/guide" },
-      { label: "Contact", to: "/account" },
+      { label: "Store administration", to: "/admin" },
     ],
   },
 ];
@@ -45,13 +46,13 @@ export function Footer() {
                 M
               </span>
               <span className="font-display text-lg font-semibold text-charcoal">
-                MuDi <span className="text-primary">Beauty</span>
+                MuDi <span className="text-primary">Beauty 3D</span>
               </span>
             </Link>
             <p className="mt-4 max-w-[34ch] text-sm leading-relaxed text-muted-foreground">
-              Premium Korean cosmetics, curated for skin in Uzbekistan.
-              Every product ships straight from Seoul with transparent
-              ingredients and honest guidance.
+              A premium 3D Korean beauty store for Uzbekistan — careful
+              product discovery, honest skincare guidance, and authentic
+              Seoul cosmetics delivered to your door.
             </p>
             <div className="mt-6 flex flex-wrap gap-2">
               {[
@@ -96,8 +97,7 @@ export function Footer() {
 
         <div className="mt-10 flex flex-col gap-3 border-t border-border/60 pt-6 text-xs text-muted-foreground sm:flex-row sm:items-center sm:justify-between">
           <p>
-            © {new Date().getFullYear()} MuDi Beauty · Placeholder content — business
-            details coming before launch.
+            © {new Date().getFullYear()} MuDi Beauty 3D · Placeholder content — verified business details arrive before launch.
           </p>
           <p>Tashkent · Seoul · Made with care</p>
         </div>

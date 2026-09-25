@@ -58,9 +58,9 @@ export default function Landing() {
               perfected by science.
             </h1>
             <p className="max-w-[46ch] text-base leading-relaxed text-muted-foreground animate-fade-up [animation-delay:160ms]">
-              MuDi Beauty brings premium K-beauty to Uzbekistan — authentic
-              serums, sunscreens and glass-skin rituals, hand-picked and
-              delivered to your door.
+              MuDi Beauty 3D brings premium K-beauty to Uzbekistan — authentic
+              serums, sunscreens, and glass-skin rituals, presented in
+              interactive 3D and delivered to your door.
             </p>
             <div className="flex flex-wrap items-center gap-3 animate-fade-up [animation-delay:240ms]">
               <Button asChild className="clay-btn h-13 px-7 text-base font-bold">
@@ -269,8 +269,8 @@ export default function Landing() {
             Your glass-skin era starts with one bottle.
           </h2>
           <p className="max-w-[52ch] text-base text-muted-foreground">
-            Join 1,200+ customers across Uzbekistan building Korean routines
-            with MuDi Beauty. Free delivery over $60.
+            Join the customers across Uzbekistan building Korean routines with
+            MuDi Beauty 3D. Free delivery on orders over $60.
           </p>
           <div className="flex flex-wrap justify-center gap-3">
             <Button asChild className="clay-btn h-13 px-8 text-base font-bold">
