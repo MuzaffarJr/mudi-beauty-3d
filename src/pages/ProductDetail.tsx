@@ -54,11 +54,18 @@ export default function ProductDetail() {
 
   const brand = brandById(product.brandId);
   if (!brand) return <NotFound />;
+
+  // Null-price products cannot be purchased yet.
+  const hasPrice = product.price != null;
+  const isAvailable = hasPrice && (product.stock ?? 0) > 0;
+  const onSale = product.compareAtPrice != null && product.compareAtPrice > product.price && hasPrice;
   const wished = has(product.id);
   const shades = product.shades ?? [];
-  const onSale = product.compareAtPrice && product.compareAtPrice > product.price;
 
   const handleAdd = () => {
+    // Null-price products are not purchasable until real retail pricing
+    // is confirmed for Uzbekistan. Do not add them to the bag.
+    if (product.price == null) return;
     addLine(product, quantity, shades.length ? (shade ?? shades[0].name) : undefined);
     setJustAdded(true);
     window.setTimeout(() => setJustAdded(false), 1400);
@@ -95,7 +102,7 @@ export default function ProductDetail() {
             <div className="absolute left-4 top-4 flex flex-col gap-1.5">
               {onSale && (
                 <Badge className="rounded-full bg-primary px-3 py-1 text-xs font-bold">
-                  Save {formatPrice(product.compareAtPrice! - product.price)}
+                  Save {formatPrice(product.compareAtPrice && product.price != null ? product.compareAtPrice - product.price : null)}
                 </Badge>
               )}
               {product.isNew && (
@@ -128,7 +135,7 @@ export default function ProductDetail() {
               <span className="font-display text-3xl font-bold text-charcoal">
                 {formatPrice(product.price)}
               </span>
-              {onSale && (
+              {onSale && product.price != null && (
                 <span className="text-lg font-medium text-muted-foreground line-through">
                   {formatPrice(product.compareAtPrice!)}
                 </span>
@@ -195,7 +202,7 @@ export default function ProductDetail() {
                 className="clay-btn h-13 flex-1 px-6 text-base font-bold"
               >
                 <ShoppingBag className="size-4.5" />
-                {product.stock === 0 ? "Sold out" : justAdded ? "Added to bag ✓" : `Add to bag · ${formatPrice(product.price * quantity)}`}
+                {product.stock === 0 ? "Sold out" : !hasPrice ? "Price coming soon" : justAdded ? "Added to bag ✓" : `Add to bag · ${formatPrice(product.price)}`}
               </Button>
               <button
                 onClick={() => toggle(product.id)}
@@ -208,7 +215,11 @@ export default function ProductDetail() {
             </div>
 
             <p className="text-xs font-semibold text-muted-foreground">
-              {product.stock > 10 ? "In stock — ships today" : product.stock > 0 ? `Only ${product.stock} left in stock` : "Currently sold out"}
+              {product.stock !== null && product.stock > 10
+                ? "In stock — ships today"
+                : product.stock !== null && product.stock > 0
+                  ? `Only ${product.stock} left in stock`
+                  : "Currently sold out"}
             </p>
 
             {/* Trust grid */}

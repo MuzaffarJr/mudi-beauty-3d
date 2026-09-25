@@ -375,13 +375,15 @@ export const productBySlug = (slug: string) => PRODUCTS.find((p) => p.slug === s
 export const brandById = (id: string) => BRANDS.find((b) => b.id === id);
 
 /** Renders a price, or the "coming soon" state when retail pricing is not yet set. */
-export const formatPrice = (value: number) =>
-  `${
-    value.toLocaleString("en-US", {
-      minimumFractionDigits: 2,
-      maximumFractionDigits: 2,
-    })
-  }`;
+/** Render a price, or the "Price coming soon" placeholder when retail
+ * pricing is not yet confirmed for Uzbekistan (catalog `price` is null).
+ * 
+ * Uses `uz-UZ` so the price is displayed in Uzbek som in the UI.
+ */
+export const formatPrice = (value: number | null) => {
+  if (value == null) return "Price coming soon";
+  return `${value.toLocaleString("uz-UZ")} UZS`;
+};
 
 /** Shipping estimate for Uzbekistan (placeholder rates, confirmed at checkout). */
 export const FREE_SHIPPING_THRESHOLD = 60;

@@ -88,7 +88,7 @@ export function CartDrawer() {
                           <Plus className="size-4" />
                         </button>
                       </div>
-                      <p className="text-sm font-bold">{formatPrice(line.price * line.quantity)}</p>
+                      <p className="text-sm font-bold">{formatPrice(line.price)}</p>
                     </div>
                   </div>
                 </div>

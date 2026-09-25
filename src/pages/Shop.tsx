@@ -46,13 +46,13 @@ export default function Shop() {
     if (activeFilter === "new") list = list.filter((p) => p.isNew);
     switch (sort) {
       case "price-asc":
-        list.sort((a, b) => a.price - b.price);
+        list.sort((a, b) => (a.price ?? Infinity) - (b.price ?? Infinity));
         break;
       case "price-desc":
-        list.sort((a, b) => b.price - a.price);
+        list.sort((a, b) => (b.price ?? Infinity) - (a.price ?? Infinity));
         break;
       case "rating":
-        list.sort((a, b) => b.rating - a.rating);
+        list.sort((a, b) => (b.rating ?? -Infinity) - (a.rating ?? -Infinity));
         break;
     }
     return list;

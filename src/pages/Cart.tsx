@@ -98,7 +98,7 @@ export default function Cart() {
                         </button>
                       </div>
                       <p className="font-display text-lg font-bold text-charcoal">
-                        {formatPrice(line.price * line.quantity)}
+                        {formatPrice(line.price)}
                       </p>
                     </div>
                   </div>

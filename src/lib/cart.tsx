@@ -16,7 +16,7 @@ export interface CartLine {
   slug: string;
   name: string;
   brandName: string;
-  price: number;
+  price: number | null;
   seed: string;
   shade?: string;
   volume: string;
@@ -67,7 +67,13 @@ export function CartProvider({ children }: { children: ReactNode }) {
     setLines((prev) => {
       const key = { productId: product.id, shade };
       const existing = prev.find((l) => sameLine(l, key));
-      const price = product.price ?? 0;
+      if (product.price == null) {
+        return prev.map((l) =>
+          sameLine(l, key)
+            ? { ...l, price: null }
+            : l,
+        );
+      }
       if (existing) {
         return prev.map((l) =>
           sameLine(l, key) ? { ...l, quantity: Math.min(l.quantity + quantity, 99) } : l,
@@ -80,7 +86,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
           slug: product.slug,
           name: product.name,
           brandName: product.brandId.toUpperCase(),
-          price,
+          price: product.price ?? 0,
           seed: product.seed,
           shade,
           volume: product.volume,
@@ -111,7 +117,9 @@ export function CartProvider({ children }: { children: ReactNode }) {
 
   const value = useMemo<CartContextValue>(() => {
     const count = lines.reduce((sum, l) => sum + l.quantity, 0);
-    const subtotal = lines.reduce((sum, l) => sum + l.price * l.quantity, 0);
+    // Null-price lines are not purchasable yet — exclude them from totals
+  // so "Price coming soon" products never contribute to cart totals.
+  const subtotal = lines.reduce((sum, l) => (l.price == null ? sum : sum + l.price * l.quantity), 0);
     return {
       lines,
       count,

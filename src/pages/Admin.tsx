@@ -167,6 +167,9 @@ export default function Admin() {
                       <td className="max-w-[280px] py-3 pr-3 font-semibold text-charcoal">{p.name}</td>
                       <td className="py-3 pr-3 text-muted-foreground">{brandById(p.brandId)?.name}</td>
                       <td className="py-3 pr-3 font-bold text-charcoal">{formatPrice(p.price)}</td>
+                      <td className="py-3 pr-3 text-xs text-muted-foreground">
+                        {p.price == null ? "Price coming soon" : `$${p.price.toFixed(2)}`}
+                      </td>
                       <td className="py-3 pr-3">
                         <span className={cn("font-bold", p.stock <= 15 ? "text-destructive" : "text-charcoal")}>
                           {p.stock}

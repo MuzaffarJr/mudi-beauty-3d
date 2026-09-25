@@ -36,6 +36,9 @@ export default function Checkout() {
   const [placed, setPlaced] = useState(false);
   const [placing, setPlacing] = useState(false);
 
+  // Null-price lines are not yet purchasable. Exclude them from counts,
+  // totals, and delivery estimates so they never affect checkout.
+  const purchasableLines = lines.filter((l) => l.price != null);
   const shipping = subtotal >= FREE_SHIPPING_THRESHOLD ? 0 : SHIPPING_FLAT;
   const discount = promo ? (subtotal * promo.pct) / 100 : 0;
   const total = Math.max(0, subtotal - discount + shipping);
@@ -211,7 +214,7 @@ export default function Checkout() {
                       <span className="line-clamp-1 font-semibold text-charcoal">{l.name}</span>
                       <span className="text-xs text-muted-foreground">× {l.quantity}{l.shade ? ` · ${l.shade}` : ""}</span>
                     </span>
-                    <span className="shrink-0 font-bold text-charcoal">{formatPrice(l.price * l.quantity)}</span>
+                    <span className="shrink-0 font-bold text-charcoal">{formatPrice(l.price)}</span>
                   </li>
                 ))}
               </ul>
@@ -258,7 +261,7 @@ export default function Checkout() {
                 </div>
                 <div className="flex justify-between border-t border-border/60 pt-3">
                   <dt className="font-display text-lg font-semibold text-charcoal">Total</dt>
-                  <dd className="font-display text-xl font-extrabold text-charcoal">{formatPrice(total)}</dd>
+                  <dd className="font-display text-xl font-extrabold text-charcoal">{formatPrice(purchasableLines.reduce((s, l) => s + (l.price ?? 0) * l.quantity, 0) + shipping)}</dd>
                 </div>
               </dl>
 

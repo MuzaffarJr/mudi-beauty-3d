@@ -15,13 +15,20 @@ export function ProductCard({ product }: { product: Product }) {
   const [justAdded, setJustAdded] = useState(false);
   const brand = brandById(product.brandId);
   const wished = has(product.id);
-  const onSale = product.compareAtPrice && product.compareAtPrice > product.price;
+  const hasPrice = product.price != null;
+  const onSale = product.compareAtPrice != null && product.compareAtPrice > product.price && hasPrice;
 
   const handleQuickAdd = () => {
     addLine(product);
     setJustAdded(true);
     window.setTimeout(() => setJustAdded(false), 1400);
   };
+
+  const isAvailable = hasPrice && (product.stock ?? 0) > 0;
+
+  const discountPercent = hasPrice && product.compareAtPrice != null && product.price != null
+    ? Math.round((1 - product.price / product.compareAtPrice) * 100)
+    : 0;
 
   return (
     <article className="clay-card group flex flex-col p-4 transition-transform duration-300 hover:-translate-y-1.5">
@@ -41,7 +48,7 @@ export function ProductCard({ product }: { product: Product }) {
         <div className="absolute left-2 top-2 flex flex-col gap-1.5">
           {onSale && (
             <Badge className="rounded-full bg-primary px-2.5 py-1 text-[11px] font-bold">
-              −{Math.round((1 - product.price / (product.compareAtPrice ?? 1)) * 100)}%
+              −{discountPercent}%
             </Badge>
           )}
           {product.isNew && (
@@ -65,19 +72,18 @@ export function ProductCard({ product }: { product: Product }) {
           <Heart
             className={cn("size-4 transition", wished ? "fill-primary text-primary" : "text-charcoal/60")}
           />
-        </button>
-
-        <Button
-          onClick={handleQuickAdd}
-          size="sm"
-          className={cn(
-            "clay-btn absolute bottom-2.5 left-1/2 h-9 -translate-x-1/2 gap-1 px-4 text-xs opacity-0 transition-all duration-300 group-hover:opacity-100 focus-visible:opacity-100",
-            justAdded && "opacity-100",
-          )}
-        >
-          <Plus className="size-3.5" />
-          {justAdded ? "Added ✓" : "Quick add"}
-        </Button>
+        </button>          <Button
+            onClick={handleQuickAdd}
+            size="sm"
+            className={cn(
+              "clay-btn absolute bottom-2.5 left-1/2 h-9 -translate-x-1/2 gap-1 px-4 text-xs opacity-0 transition-all duration-300 group-hover:opacity-100 focus-visible:opacity-100",
+              justAdded && "opacity-100",
+            )}
+            disabled={!isAvailable}
+          >
+            <Plus className="size-3.5" />
+            {!hasPrice ? "Price coming soon" : !isAvailable ? "Sold out" : justAdded ? "Added ✓" : "Quick add"}
+          </Button>
       </div>
 
       <div className="mt-3 flex flex-1 flex-col">
@@ -113,7 +119,7 @@ export function ProductCard({ product }: { product: Product }) {
           <span className="text-base font-extrabold text-charcoal">
             {formatPrice(product.price)}
           </span>
-          {onSale && (
+          {onSale && product.price != null && (
             <span className="text-sm font-medium text-muted-foreground line-through">
               {formatPrice(product.compareAtPrice!)}
             </span>

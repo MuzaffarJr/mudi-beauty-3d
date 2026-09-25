@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router";
+import { formatPrice } from "@/data/products";
 import {
   Sheet,
   SheetContent,
@@ -127,7 +128,7 @@ export function Navbar() {
                     >
                       <span className="line-clamp-1">{p.name}</span>
                       <span className="ml-3 shrink-0 text-xs font-bold text-primary">
-                        ${p.price.toFixed(2)}
+                        {formatPrice(p.price)}
                       </span>
                     </button>
                   ))}
