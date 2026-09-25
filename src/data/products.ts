@@ -1,3 +1,22 @@
+/**
+ * MuDi Beauty — product catalog.
+ *
+ * Facts verified against official brand sources (Sept 2026):
+ *  - COSRX — Advanced Snail 96 Mucin Power Essence — cosrx.com
+ *  - Beauty of Joseon — Glow Serum: Propolis + Niacinamide — beautyofjoseon.com
+ *  - Round Lab — 1025 Dokdo Toner — roundlab.com
+ *  - Torriden — DIVE-IN Serum — torriden.us
+ *  - Laneige — Lip Sleeping Mask EX — us.laneige.com
+ *  - Mediheal — Tea Tree Essential Mask — mediheal.com
+ *
+ * Data policy:
+ *  - Only claims published by the brands themselves (ingredients, usage steps,
+ *    brand marketing language). No invented certifications, clinical results,
+ *    ratings, review counts, or Uzbekistan retail prices.
+ *  - `price` is null until real retail pricing is confirmed for Uzbekistan;
+ *    the UI renders "Price coming soon" and disables purchase.
+ */
+
 export type SkinConcern =
   | "dryness"
   | "acne"
@@ -34,6 +53,7 @@ export interface Brand {
   country: string;
   tagline: string;
   description: string;
+  officialSite: string;
 }
 
 export interface Category {
@@ -50,10 +70,10 @@ export interface Product {
   name: string;
   type: ProductType;
   category: ProductCategory;
-  price: number; // USD
-  compareAtPrice?: number;
-  rating: number;
-  reviewCount: number;
+  price: number | null; // null = retail price not yet confirmed for Uzbekistan
+  compareAtPrice?: number | null;
+  rating: number | null; // null = no verified rating to publish
+  reviewCount: number | null; // null = no verified review count to publish
   volume: string;
   blurb: string;
   description: string;
@@ -64,36 +84,30 @@ export interface Product {
   howToUse: string;
   colors?: { name: string; hex: string; tone: string }[];
   shades?: { name: string; hex: string; tone: string }[];
-  stock: number;
+  stock: number | null; // null = availability not yet confirmed
   isBestseller?: boolean;
   isNew?: boolean;
-  seed: string; // for generated product imagery
+  seed: string; // stable key for the editorial fallback renderer
+  image?: string; // licensed product photography (user-provided)
+  imageAlt?: string;
+  sourceUrl?: string; // official brand product page, shown as provenance
 }
 
+/**
+ * Photography policy: drop licensed product photos at
+ * `public/products/<slug>.jpg` and set `image: "/products/<slug>.jpg"`.
+ * Until then the editorial fallback renderer is used.
+ */
+
 export const BRANDS: Brand[] = [
-  {
-    id: "laneige",
-    name: "LANEIGE",
-    country: "South Korea",
-    tagline: "Hydration science",
-    description:
-      "Seoul-born skincare pioneer famous for water-science hydration, from the Water Sleeping Mask to the Lip Sleeping Mask loved worldwide.",
-  },
   {
     id: "cosrx",
     name: "COSRX",
     country: "South Korea",
-    tagline: "Minimal ingredients, maximum results",
+    tagline: "Minimal ingredients, honest results",
     description:
-      "A cult-favorite K-beauty lab built around short, effective formulas — snail mucin, centella, and BHA done right.",
-  },
-  {
-    id: "sulwhasoo",
-    name: "Sulwhasoo",
-    country: "South Korea",
-    tagline: "Herbal luxury",
-    description:
-      "Korea's premier luxury house blending ginseng and traditional herbal wisdom with modern anti-aging science.",
+      "A Seoul-based K-beauty lab built around short, effective formulas — snail mucin, propolis and centella done simply.",
+    officialSite: "https://www.cosrx.com",
   },
   {
     id: "beautyofjoseon",
@@ -101,43 +115,53 @@ export const BRANDS: Brand[] = [
     country: "South Korea",
     tagline: "Hanbang, reimagined",
     description:
-      "Joseon-dynasty herbal ingredients meeting modern dermatology — gentle formulas for daily glow.",
+      "Joseon-era herbal ingredients paired with modern dermatology — gentle daily formulas built on rice, propolis and ginseng.",
+    officialSite: "https://beautyofjoseon.com",
   },
   {
-    id: "innisfree",
-    name: "innisfree",
+    id: "roundlab",
+    name: "Round Lab",
     country: "South Korea",
-    tagline: "Nature from Jeju",
+    tagline: "Skin balanced by nature",
     description:
-      "Green-tea and volcanic-clay skincare sourced from Jeju Island, known for fresh, affordable daily care.",
+      "Jeju-born skincare built on deep-sea water and gentle, dermatologist-friendly textures for sensitive skin.",
+    officialSite: "https://roundlab.com",
   },
   {
-    id: "romand",
-    name: "rom&nd",
+    id: "torriden",
+    name: "Torriden",
     country: "South Korea",
-    tagline: "Effortless modern makeup",
+    tagline: "Hydration engineering",
     description:
-      "The makeup darling of Seoul — weightless tints, glazed finishes, and shades tuned for warm undertones.",
+      "The hydration specialists behind the 5D low-molecular hyaluronic acid complex — lightweight moisture for every skin layer.",
+    officialSite: "https://torriden.us",
+  },
+  {
+    id: "laneige",
+    name: "LANEIGE",
+    country: "South Korea",
+    tagline: "Hydration science",
+    description:
+      "Seoul's water-science pioneer — home of the Water Sleeping Mask and the world's most-loved Lip Sleeping Mask.",
+    officialSite: "https://us.laneige.com",
+  },
+  {
+    id: "mediheal",
+    name: "MEDIHEAL",
+    country: "South Korea",
+    tagline: "The sheet mask specialist",
+    description:
+      "Korea's sheet-mask house — derma-tested essences in soft, comfort-fit masks for targeted daily care.",
+    officialSite: "https://mediheal.com",
   },
 ];
 
 export const CATEGORIES: Category[] = [
-  { id: "cleanser", label: "Cleanser", category: "skincare", blurb: "Low-pH gels, oils and balms" },
-  { id: "toner", label: "Toner", category: "skincare", blurb: "Hydration first layers" },
+  { id: "toner", label: "Toner", category: "skincare", blurb: "Hydration-first layers" },
   { id: "essence", label: "Essence", category: "skincare", blurb: "The Korean skin-prep step" },
-  { id: "serum", label: "Serum", category: "skincare", blurb: "Targeted actives" },
-  { id: "ampoule", label: "Ampoule", category: "skincare", blurb: "Concentrated boosters" },
-  { id: "moisturizer", label: "Moisturizer", category: "skincare", blurb: "Creams, gels & balms" },
-  { id: "sunscreen", label: "Sunscreen", category: "skincare", blurb: "Everyday SPF" },
-  { id: "mask", label: "Masks", category: "skincare", blurb: "Sheet, wash-off & sleeping" },
-  { id: "cushion", label: "Cushion", category: "makeup", blurb: "Signature K-base" },
-  { id: "foundation", label: "Foundation", category: "makeup", blurb: "Skin-like coverage" },
-  { id: "lip", label: "Lip", category: "makeup", blurb: "Tints, balms & glaze" },
-  { id: "eye", label: "Eye", category: "makeup", blurb: "Palettes & liner" },
-  { id: "blush", label: "Blush", category: "makeup", blurb: "Soft diffusion color" },
-  { id: "shampoo", label: "Shampoo", category: "hair-body", blurb: "Scalp-first care" },
-  { id: "treatment", label: "Treatment", category: "hair-body", blurb: "Hair masks & oils" },
-  { id: "bodycare", label: "Body care", category: "hair-body", blurb: "Lotions & cleansers" },
+  { id: "serum", label: "Serum", category: "skincare", blurb: "Targeted treatment layers" },
+  { id: "mask", label: "Masks", category: "skincare", blurb: "Sheet & sleeping treatments" },
+  { id: "lip", label: "Lip care", category: "makeup", blurb: "Overnight & daily lip care" },
 ];
 
 export const CONCERN_LABELS: Record<SkinConcern, string> = {
@@ -153,400 +177,213 @@ export const CONCERN_LABELS: Record<SkinConcern, string> = {
 
 export const PRODUCTS: Product[] = [
   {
-    id: "p1",
-    slug: "glow-deep-serum",
-    brandId: "beautyofjoseon",
-    name: "Glow Deep Serum — Rice + Alpha-Arbutin",
-    type: "serum",
-    category: "skincare",
-    price: 19.0,
-    compareAtPrice: 24.0,
-    rating: 4.9,
-    reviewCount: 412,
-    volume: "30 ml",
-    blurb: "The cult rice serum for even, glass-glow tone.",
-    description:
-      "A lightweight brightening serum that pairs 68% rice bran water with 2% alpha-arbutin to visibly even tone and soften the look of dark spots over weeks of daily use. Fast-absorbing with no tack — layered easily under SPF.",
-    benefits: [
-      "Visibly fades dark spots and post-acne marks",
-      "Rice bran water hydrates and softens texture",
-      "Weightless layering under makeup or SPF",
-    ],
-    ingredients: [
-      { name: "Rice bran water 68%", role: "Hydrates, brightens, soothes" },
-      { name: "Alpha-arbutin 2%", role: "Evens tone, fades spots" },
-      { name: "Niacinamide", role: "Barrier support" },
-    ],
-    skinTypes: ["All", "Dry", "Combination"],
-    concerns: ["pigmentation", "dullness", "dryness"],
-    howToUse:
-      "After toner, smooth 2–3 drops over face morning and evening. Follow with moisturizer and SPF in daytime.",
-    stock: 42,
-    isBestseller: true,
-    seed: "joseon-glow-1",
-  },
-  {
-    id: "p2",
-    slug: "snail-mucin-96-essence",
+    id: "p-cosrx-snail-96",
+    slug: "cosrx-snail-96-mucin-essence",
     brandId: "cosrx",
     name: "Advanced Snail 96 Mucin Power Essence",
     type: "essence",
     category: "skincare",
-    price: 21.5,
-    rating: 4.8,
-    reviewCount: 586,
+    price: null,
+    rating: null,
+    reviewCount: null,
     volume: "100 ml",
-    blurb: "96% snail mucin for bounce and repair.",
+    blurb: "The cult essence with 96% snail secretion filtrate.",
     description:
-      "The world's most-loved K-beauty essence. 96% snail secretion filtrate floods the skin with glycoproteins that support repair, calm irritation, and leave a plump, lit-from-within finish. A first bottle of K-beauty for a reason.",
+      "COSRX's award-winning essence is built on 96% snail secretion filtrate — a lightweight, watery-gel layer that floods skin with moisture, supports the skin barrier, and leaves a healthy glow without stickiness. The brand's most-loved K-beauty essential and a classic first step into Korean skincare.",
     benefits: [
-      "Supports skin repair and elasticity",
-      "Calms redness and post-blemish irritation",
-      "Plump, dewy finish without heaviness",
+      "Deep, long-lasting hydration with 96% snail secretion filtrate",
+      "Barrier care and a visible glow (brand's published claim)",
+      "Lightweight, non-sticky finish that layers into any routine",
     ],
     ingredients: [
-      { name: "Snail secretion filtrate 96%", role: "Repair, elasticity, hydration" },
-      { name: "Sodium hyaluronate", role: "Deep hydration" },
-      { name: "Panthenol", role: "Soothes and strengthens" },
-    ],
-    skinTypes: ["All", "Sensitive", "Dry"],
-    concerns: ["dryness", "redness", "dullness", "aging"],
-    howToUse:
-      "After cleansing and toner, pat 2–3 pumps into skin until absorbed. Use morning and evening.",
-    stock: 61,
-    isBestseller: true,
-    seed: "cosrx-snail-2",
-  },
-  {
-    id: "p3",
-    slug: "relief-sun-rice-probiotics",
-    brandId: "beautyofjoseon",
-    name: "Relief Sun — Rice + Probiotics SPF50+",
-    type: "sunscreen",
-    category: "skincare",
-    price: 17.0,
-    rating: 4.9,
-    reviewCount: 733,
-    volume: "50 ml",
-    blurb: "The no-cast organic sunscreen TikTok made famous.",
-    description:
-      "A featherlight chemical sunscreen that behaves like a hydrating cream: zero white cast, zero stickiness, and a soft dewy finish. Broad-spectrum SPF50+ PA++++ with rice extract and probiotics to support the barrier.",
-    benefits: [
-      "SPF50+ PA++++ broad-spectrum protection",
-      "No white cast on any skin tone",
-      "Doubles as a hydrating primer",
-    ],
-    ingredients: [
-      { name: "Rice extract", role: "Hydrates, brightens" },
-      { name: "Probiotics complex", role: "Barrier support" },
-      { name: "Niacinamide", role: "Evens tone" },
-    ],
-    skinTypes: ["All", "Sensitive", "Combination"],
-    concerns: ["dryness", "sensitivity", "pigmentation"],
-    howToUse:
-      "As the final morning step, apply generously to face and neck. Reapply every 2–3 hours in direct sun.",
-    stock: 88,
-    isBestseller: true,
-    seed: "joseon-sun-3",
-  },
-  {
-    id: "p4",
-    slug: "lip-sleeping-mask-berry",
-    brandId: "laneige",
-    name: "Lip Sleeping Mask — Berry",
-    type: "mask",
-    category: "skincare",
-    price: 24.0,
-    rating: 4.9,
-    reviewCount: 921,
-    volume: "20 g",
-    blurb: "The iconic overnight lip treatment.",
-    description:
-      "A berry-scented overnight mask with a vitamin C and antioxidant-rich Moisture Wrap™ technology. One jar lasts months: lips wake up soft, smooth, and comfortable — the world's most repurchased K-beauty product.",
-    benefits: [
-      "Overnight repair for flaky, dry lips",
-      "Berry fruit complex with antioxidants",
-      "Melts in — never sticky or heavy",
-    ],
-    ingredients: [
-      { name: "Berry fruit complex", role: "Antioxidants, softening" },
-      { name: "Murumuru & shea butter", role: "Occlusive moisture" },
-      { name: "Vitamin C", role: "Brightens lip tone" },
-    ],
-    skinTypes: ["All"],
-    concerns: ["dryness"],
-    howToUse:
-      "Before bed, apply a generous layer to lips. Gently tissue off any residue in the morning.",
-    stock: 120,
-    isBestseller: true,
-    seed: "laneige-lip-4",
-  },
-  {
-    id: "p5",
-    slug: "water-sleeping-mask",
-    brandId: "laneige",
-    name: "Water Sleeping Mask",
-    type: "mask",
-    category: "skincare",
-    price: 32.0,
-    compareAtPrice: 38.0,
-    rating: 4.8,
-    reviewCount: 354,
-    volume: "70 ml",
-    blurb: "Seoul's famous overnight hydration wrap.",
-    description:
-      "A gel-type overnight mask with SLEEPSCENT™ and hydro-ionized mineral water that locks in the night's full routine. Skin looks visibly plumper and glassier by morning — ideal when heaters or summer AC dehydrate.",
-    benefits: [
-      "Seals in your entire evening routine",
-      "Wake up visibly plumper and glassy",
-      "Lightweight gel, washes clean",
-    ],
-    ingredients: [
-      { name: "Hydro-ionized mineral water", role: "Deep hydration" },
-      { name: "Sleepscent™ aromatic complex", role: "Relaxation ritual" },
-      { name: "Beta-glucan", role: "Soothes and plumps" },
+      { name: "Snail secretion filtrate 96%", role: "Deep hydration and barrier care" },
+      { name: "Sodium hyaluronate", role: "Humectant hydration" },
+      { name: "Panthenol", role: "Soothes and supports the barrier" },
+      { name: "Allantoin", role: "Calms and softens" },
     ],
     skinTypes: ["All", "Dry", "Combination"],
-    concerns: ["dryness", "dullness"],
-    howToUse: "Two or three nights a week, apply as the last evening step. Rinse in the morning.",
-    stock: 35,
+    concerns: ["dryness", "dullness", "redness"],
+    howToUse:
+      "After cleansing and toning, apply a small amount to the entire face. Gently pat with fingertips to aid absorption, then follow with a moisturizer.",
+    stock: null,
     isBestseller: true,
-    seed: "laneige-water-5",
+    seed: "cosrx-snail-96",
+    sourceUrl: "https://www.cosrx.com/products/advanced-snail-96-mucin-power-essence",
   },
   {
-    id: "p6",
-    slug: "concentrated-ginseng-renewing-cream",
-    brandId: "sulwhasoo",
-    name: "Concentrated Ginseng Renewing Cream",
-    type: "moisturizer",
+    id: "p-boj-glow-serum",
+    slug: "beauty-of-joseon-glow-serum",
+    brandId: "beautyofjoseon",
+    name: "Glow Serum: Propolis + Niacinamide",
+    type: "serum",
     category: "skincare",
-    price: 145.0,
-    rating: 4.7,
-    reviewCount: 128,
-    volume: "60 ml",
-    blurb: "Herbal anti-aging luxury from Seoul.",
+    price: null,
+    rating: null,
+    reviewCount: null,
+    volume: "30 ml",
+    blurb: "Propolis and niacinamide for balanced, glassy skin.",
     description:
-      "Sulwhasoo's flagship: a silken cream with Ginsenomics™ — a patented ginseng saponin complex — that visibly firms and restores radiance. Texture melts between a balm and a cream, cushioning the skin all day.",
+      "Beauty of Joseon's Glow Serum pairs 60% propolis extract with 2% niacinamide — propolis to hydrate and soothe, niacinamide to keep oil and moisture in balance while refining the look of texture, pores and fine lines. A honey-toned daily serum that leaves a luminous, glassy finish.",
     benefits: [
-      "Visibly improves firmness in 4 weeks",
-      "Patented Ginsenomics™ complex",
-      "Rich yet fast-absorbing cushion texture",
+      "Hydrates and soothes with 60% propolis extract",
+      "Balances oil and moisture with 2% niacinamide",
+      "Improves the look of texture, pores and fine lines",
     ],
     ingredients: [
-      { name: "Ginsenomics™", role: "Firming, radiance" },
-      { name: "Ginseng root extract", role: "Antioxidant care" },
-      { name: "Honey & olive extracts", role: "Nourishing barrier" },
+      { name: "Propolis extract 60%", role: "Hydrates and soothes" },
+      { name: "Niacinamide 2%", role: "Balances oil-moisture, refines texture" },
     ],
-    skinTypes: ["Dry", "Mature", "Normal"],
-    concerns: ["aging", "dryness", "dullness"],
-    howToUse: "Morning and evening, warm a pearl-sized amount between palms and press into skin.",
-    stock: 12,
-    isBestseller: false,
-    seed: "sulwhasoo-cream-6",
+    skinTypes: ["All", "Combination", "Oily"],
+    concerns: ["dullness", "pores", "redness"],
+    howToUse:
+      "After cleansing and toning, apply 2–3 drops over the face and gently pat until absorbed. Use morning and evening, followed by moisturizer and SPF in the daytime.",
+    stock: null,
+    isBestseller: true,
+    seed: "boj-glow-serum",
+    sourceUrl: "https://beautyofjoseon.com/products/glow-serum-propolis-niacinamide",
   },
   {
-    id: "p7",
-    slug: "green-tea-fresh-cleanser",
-    brandId: "innisfree",
-    name: "Green Tea Foam Cleanser",
-    type: "cleanser",
+    id: "p-roundlab-dokdo-toner",
+    slug: "round-lab-1025-dokdo-toner",
+    brandId: "roundlab",
+    name: "1025 Dokdo Toner",
+    type: "toner",
     category: "skincare",
-    price: 11.0,
-    rating: 4.6,
-    reviewCount: 297,
-    volume: "150 ml",
-    blurb: "Jeju green tea in a soft daily foam.",
+    price: null,
+    rating: null,
+    reviewCount: null,
+    volume: "100 / 200 / 500 ml",
+    blurb: "Deep-sea water hydration from 5,000 feet below the East Sea.",
     description:
-      "A cushiony low-pH foam with Jeju green tea extract that removes the day without stripping. Ideal second cleanse in a double-cleanse routine — skin feels soft and never squeaky.",
+      "Round Lab's signature toner is built on deep-sea water drawn from 5,000 feet below the surface near Ulleungdo — naturally rich in minerals like magnesium, calcium and zinc. The watery texture absorbs instantly with no sticky finish, replenishing moisture while gently sweeping away dead skin cells and calming tired skin with panthenol, allantoin and betaine. Unscented and kind to sensitive skin.",
     benefits: [
-      "Removes impurities without stripping",
-      "Jeju green tea hydrates while cleansing",
-      "Perfect pH for the daily second cleanse",
+      "Long-lasting moisture with 72 nature-derived minerals (brand-published)",
+      "Gently exfoliates dead skin cells and helps control excess sebum",
+      "Soothing care for tired, irritated skin",
     ],
     ingredients: [
-      { name: "Jeju green tea extract", role: "Antioxidant hydration" },
-      { name: "Glycerin", role: "Softening" },
-      { name: "Amino-acid cleansers", role: "Gentle cleanse" },
+      { name: "Deep-sea water", role: "Mineral-rich hydration" },
+      { name: "Panthenol + allantoin + betaine", role: "Soothing care" },
+      { name: "Protease (Hatching EX-07)", role: "Gentle exfoliation and sebum control" },
     ],
-    skinTypes: ["All", "Oily", "Combination"],
-    concerns: ["pores", "dullness"],
-    howToUse: "Morning and evening, emulsify a small amount with water and massage over damp skin. Rinse.",
-    stock: 74,
-    seed: "innisfree-cleanser-7",
+    skinTypes: ["All", "Sensitive"],
+    concerns: ["dryness", "sensitivity", "redness", "pores"],
+    howToUse:
+      "After cleansing, soak a cotton pad with toner and gently swipe all over the face. For a leave-on treatment, soak cotton pads and leave on the face for 5–10 minutes.",
+    stock: null,
+    isBestseller: true,
+    seed: "round-lab-dokdo",
+    sourceUrl: "https://roundlab.com/products/1025-dokdo-toner",
   },
   {
-    id: "p8",
-    slug: "glow-tinge-lip-tint-rose",
-    brandId: "romand",
-    name: "Glasting Water Tint — Rose",
-    type: "lip",
-    category: "makeup",
-    price: 12.5,
-    rating: 4.7,
-    reviewCount: 268,
-    volume: "4.5 g",
-    blurb: "Glazed, glass-finish lip color.",
+    id: "p-torriden-dive-in",
+    slug: "torriden-dive-in-serum",
+    brandId: "torriden",
+    name: "DIVE-IN Serum",
+    type: "serum",
+    category: "skincare",
+    price: null,
+    rating: null,
+    reviewCount: null,
+    volume: "50 ml",
+    blurb: "Five molecular weights of hyaluronic acid, surface to deep.",
     description:
-      "rom&nd's water-gloss tint delivers that signature Seoul glazed-lip look: high shine, low stick, and a rose-juice stain that survives coffee. Sheer but buildable — one layer for a kiss of color, three for gloss-editorial.",
+      "Torriden's hydration serum carries five different sizes of hyaluronic acid molecules — larger ones lock moisture onto the surface while smaller, low-molecular forms absorb more easily to hydrate deeper layers. Panthenol and allantoin keep the formula gentle enough for sensitive skin, and the lightweight texture absorbs fast with a dewy, non-sticky finish.",
     benefits: [
-      "Glass-gloss finish without stickiness",
-      "Water-light stain survives meals",
-      "Rose-berry shade tuned for warm undertones",
+      "Multi-layer hydration with the 5D low-molecular hyaluronic acid complex",
+      "Up to 48 hours of lasting moisture (brand's published claim)",
+      "Gentle formula suitable even for sensitive skin",
     ],
     ingredients: [
-      { name: "Water-based film former", role: "Glassy shine" },
-      { name: "Jojoba oil", role: "Comfort" },
-      { name: "Berry pigment complex", role: "Juicy color" },
+      { name: "5D Hyaluronic Acid complex", role: "Surface-to-deep hydration" },
+      { name: "Panthenol", role: "Retains moisture and soothes" },
+      { name: "Allantoin", role: "Calms sensitivity" },
+      { name: "Ceramide NP", role: "Barrier support" },
+    ],
+    skinTypes: ["All", "Dry", "Sensitive", "Combination"],
+    concerns: ["dryness", "sensitivity", "dullness"],
+    howToUse:
+      "Evenly apply an appropriate amount to the face and lightly pat until absorbed. Use morning and evening after cleansing and toning.",
+    stock: null,
+    isBestseller: true,
+    seed: "torriden-dive-in",
+    sourceUrl: "https://torriden.us/products/dive-in-serum",
+  },
+  {
+    id: "p-laneige-lip-mask-ex",
+    slug: "laneige-lip-sleeping-mask-ex",
+    brandId: "laneige",
+    name: "Lip Sleeping Mask EX",
+    type: "mask",
+    category: "skincare",
+    price: null,
+    rating: null,
+    reviewCount: null,
+    volume: "20 g",
+    blurb: "The world's most-loved overnight lip treatment.",
+    description:
+      "LANEIGE's iconic leave-on lip mask melts over lips overnight with its Moisture Wrap™ technology — a breathable moisture barrier of murumuru and shea butter sealed with antioxidant berry fruit complex and vitamin C. One generous layer before bed, softer, smoother lips by morning. Includes a spatula for hygienic application.",
+    benefits: [
+      "Intensive overnight moisture for dry, flaky lips",
+      "Moisture Wrap™ technology seals in hydration as you sleep",
+      "Murumuru & shea butter for soft, supple lips by morning",
+    ],
+    ingredients: [
+      { name: "Moisture Wrap™ technology", role: "Seals in moisture overnight" },
+      { name: "Murumuru & shea butter", role: "Nourishing, softening" },
+      { name: "Berry fruit complex + vitamin C", role: "Antioxidant care" },
     ],
     skinTypes: ["All"],
     concerns: ["dryness"],
-    shades: [
-      { name: "01 Rose", hex: "#d4707f", tone: "rose" },
-      { name: "04 Peach", hex: "#e8927c", tone: "peach" },
-      { name: "07 Berry", hex: "#b25566", tone: "berry" },
-    ],
     howToUse:
-      "Apply a thin layer over bare lips. Reapply after meals for a fresh glass finish.",
-    stock: 96,
+      "PM: apply generously before bed for intensive overnight moisture. AM: apply a thin layer to prep lips before the rest of your lip routine. Use the included spatula and gently wipe off any residue in the morning.",
+    stock: null,
+    isBestseller: true,
     isNew: true,
-    seed: "romand-tint-8",
+    seed: "laneige-lip-ex",
+    sourceUrl: "https://us.laneige.com/products/lip-sleeping-mask",
   },
   {
-    id: "p9",
-    slug: "melting-blush-cushion",
-    brandId: "romand",
-    name: "Better Than Cheek — Melting Blush",
-    type: "blush",
-    category: "makeup",
-    price: 13.0,
-    rating: 4.8,
-    reviewCount: 187,
-    volume: "4 g",
-    blurb: "Pillow-soft flush that melts into skin.",
+    id: "p-mediheal-teatree-mask",
+    slug: "mediheal-tea-tree-essential-mask",
+    brandId: "mediheal",
+    name: "Tea Tree Essential Mask",
+    type: "mask",
+    category: "skincare",
+    price: null,
+    rating: null,
+    reviewCount: null,
+    volume: "25 ml",
+    blurb: "A calming sheet mask for troubled, unbalanced skin.",
     description:
-      "A bouncy pressed blush with a marshmallow texture that diffuses pigment like airbrush — no patches, no chalk. Seoul's answer to natural flush, made for daily wear.",
+      "MEDIHEAL's Tea Tree Essential Mask delivers a soothing essence to skin that feels irritated or unbalanced — tea tree helps clear pores and reduce excess oil while calming visible redness. The soft, comfort-fit sheet holds its moisture for the entire wear time and leaves a fresh, non-sticky finish.",
     benefits: [
-      "Blurs like a filter, blends with fingers",
-      "One swipe gives an all-day flush",
-      "Shade family designed for warm tones",
+      "Soothes and rebalances troubled skin",
+      "Helps clear pores and reduce excess oil",
+      "Comfort-fit sheet with a fresh, non-sticky finish",
     ],
     ingredients: [
-      { name: "Silica powder", role: "Soft-focus blur" },
-      { name: "Shea butter", role: "Creamy blendability" },
-      { name: "Mineral pigments", role: "Natural flush" },
+      { name: "Tea tree extract", role: "Calms visible redness, clarifies" },
+      { name: "Soothing essence complex", role: "Rebalances stressed skin" },
     ],
-    skinTypes: ["All"],
-    concerns: ["dullness"],
-    shades: [
-      { name: "W01 Ginger", hex: "#e0a179", tone: "warm peach" },
-      { name: "P01 Berry", hex: "#d67f95", tone: "cool rose" },
-      { name: "C02 Sand", hex: "#e3b6a0", tone: "neutral nude" },
-    ],
+    skinTypes: ["Oily", "Combination", "Sensitive"],
+    concerns: ["acne", "redness", "pores"],
     howToUse:
-      "Smile and tap a small amount onto the apples of the cheeks with fingertips, blending upward.",
-    stock: 58,
+      "After cleansing and toning, apply the mask and smooth it to fit the face. Leave on for 10–20 minutes, remove, then gently press the remaining essence into the skin.",
+    stock: null,
     isNew: true,
-    seed: "romand-blush-9",
-  },
-  {
-    id: "p10",
-    slug: "propolis-ampoule",
-    brandId: "cosrx",
-    name: "Full Fit Propolis Light Ampoule",
-    type: "ampoule",
-    category: "skincare",
-    price: 24.0,
-    rating: 4.8,
-    reviewCount: 341,
-    volume: "40 ml",
-    blurb: "Golden honey glow in one pump.",
-    description:
-      "A silky ampoule with black propolis and honey extract that calms reactive skin and adds a honeyed glow. One of the most reliable picks for redness-prone and post-treatment skin.",
-    benefits: [
-      "Calms redness and reactive skin",
-      "Honeyed, healthy glow from day one",
-      "Non-sticky silky glide",
-    ],
-    ingredients: [
-      { name: "Black propolis extract 66%", role: "Soothes, antibacterial" },
-      { name: "Honey extract", role: "Hydrating glow" },
-      { name: "Royal jelly", role: "Nourishment" },
-    ],
-    skinTypes: ["Sensitive", "Dry", "All"],
-    concerns: ["redness", "sensitivity", "dullness"],
-    howToUse: "Morning and evening, apply 2 pumps after serum. Pat gently until absorbed.",
-    stock: 47,
-    seed: "cosrx-propolis-10",
-  },
-  {
-    id: "p11",
-    slug: "no-sebum-mineral-powder",
-    brandId: "innisfree",
-    name: "No-Sebum Mineral Powder",
-    type: "cushion",
-    category: "makeup",
-    price: 9.5,
-    rating: 4.7,
-    reviewCount: 502,
-    volume: "5 g",
-    blurb: "The matte-lock finishing legend.",
-    description:
-      "A featherweight mineral powder with Jeju minerals and mint that mattifies shine without looking flat or ashy. Pocket-sized with a soft puff — the finishing step every T-zone needs.",
-    benefits: [
-      "Blots oil for hours without caking",
-      "Invisible on all skin tones",
-      "Travel puff included",
-    ],
-    ingredients: [
-      { name: "Jeju mineral powder", role: "Oil control" },
-      { name: "Mint extract", role: "Fresh feel" },
-      { name: "Silica", role: "Soft blur" },
-    ],
-    skinTypes: ["Oily", "Combination", "All"],
-    concerns: ["pores"],
-    howToUse: "Press lightly over moisturizer, base, or bare skin to set and mattify.",
-    stock: 150,
-    seed: "innisfree-powder-11",
-  },
-  {
-    id: "p12",
-    slug: "first-care-activating-serum",
-    brandId: "sulwhasoo",
-    name: "First Care Activating Serum VI",
-    type: "serum",
-    category: "skincare",
-    price: 89.0,
-    rating: 4.8,
-    reviewCount: 163,
-    volume: "120 ml",
-    blurb: "The pre-serum that makes everything work harder.",
-    description:
-      "Sulwhasoo's cult first step: a watery herbal booster applied right after cleansing that preps the skin to absorb every layer after it. Jaum-balancing complex with five treasured herbs — a quiet luxury upgrade to any routine.",
-    benefits: [
-      "Boosts absorption of the whole routine",
-      "Five-herb Jaum balancing complex",
-      "Hydrating, fast, never sticky",
-    ],
-    ingredients: [
-      { name: "Jaum balancing complex™", role: "Skin equilibrium" },
-      { name: "Solomon's seal extract", role: "Firming" },
-      { name: "Honeysuckle extract", role: "Soothing" },
-    ],
-    skinTypes: ["All", "Dry", "Mature"],
-    concerns: ["dullness", "dryness", "aging"],
-    howToUse: "First step after cleansing, morning and evening: pour into palms and press into skin.",
-    stock: 19,
-    isNew: true,
-    seed: "sulwhasoo-firstcare-12",
+    seed: "mediheal-teatree",
+    sourceUrl: "https://mediheal.com/products/teatree-essential-mask-calming-moisture",
   },
 ];
 
 export const productBySlug = (slug: string) => PRODUCTS.find((p) => p.slug === slug);
 export const brandById = (id: string) => BRANDS.find((b) => b.id === id);
 
+/** Renders a price, or the "coming soon" state when retail pricing is not yet set. */
 export const formatPrice = (value: number) =>
   `$${value.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
 
-/** Shipping estimate for Uzbekistan (placeholder rates) */
+/** Shipping estimate for Uzbekistan (placeholder rates, confirmed at checkout). */
 export const FREE_SHIPPING_THRESHOLD = 60;
 export const SHIPPING_FLAT = 5;
