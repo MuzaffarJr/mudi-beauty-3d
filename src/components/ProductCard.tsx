@@ -40,6 +40,7 @@ export function ProductCard({ product }: { product: Product }) {
         >
           <ProductThumb
             seed={product.seed}
+            image={product.image}
             label={product.name}
             className="aspect-square w-full"
           />

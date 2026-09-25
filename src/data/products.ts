@@ -87,8 +87,9 @@ export interface Product {
   isBestseller?: boolean;
   isNew?: boolean;
   seed: string; // stable key for the editorial fallback renderer
-  image?: string; // licensed product photography (user-provided)
+  image?: string; // licensed product photography (local: /products/<slug>.jpg | remote URL)
   imageAlt?: string;
+  imageFallback?: boolean; // set true to force fallback renderer; false to require real photo
   sourceUrl?: string; // official brand product page, shown as provenance
 }
 
@@ -202,6 +203,8 @@ export const PRODUCTS: Product[] = [
     stock: null,
     isBestseller: true,
     seed: "cosrx-snail-96",
+    image: "/products/cosrx-snail-96-mucin-essence.jpg",
+    imageAlt: "COSRX Advanced Snail 96 Mucin Power Essence dark blue bottle",
     sourceUrl: "https://www.cosrx.com/products/advanced-snail-96-mucin-power-essence",
   },
   {
@@ -234,6 +237,8 @@ export const PRODUCTS: Product[] = [
     stock: null,
     isBestseller: true,
     seed: "boj-glow-serum",
+    image: "/products/boj-glow-serum-propolis-niacinamide.jpg",
+    imageAlt: "Beauty of Joseon Glow Serum Propolis + Niacinamide dropper bottle",
     sourceUrl: "https://beautyofjoseon.com/products/glow-serum-propolis-niacinamide",
   },
   {
@@ -267,6 +272,8 @@ export const PRODUCTS: Product[] = [
     stock: null,
     isBestseller: true,
     seed: "round-lab-dokdo",
+    image: "/products/round-lab-1025-dokdo-toner.jpg",
+    imageAlt: "Round Lab 1025 Dokdo Toner cream bottle with label",
     sourceUrl: "https://roundlab.com/products/1025-dokdo-toner",
   },
   {
@@ -301,6 +308,8 @@ export const PRODUCTS: Product[] = [
     stock: null,
     isBestseller: true,
     seed: "torriden-dive-in",
+    image: "/products/torriden-dive-in-serum.jpg",
+    imageAlt: "Torriden DIVE-IN Serum dropper bottle with label",
     sourceUrl: "https://torriden.us/products/dive-in-serum",
   },
   {
@@ -335,6 +344,8 @@ export const PRODUCTS: Product[] = [
     isBestseller: true,
     isNew: true,
     seed: "laneige-lip-ex",
+    image: "/products/laneige-lip-sleeping-mask-ex.jpg",
+    imageAlt: "LANEIGE Lip Sleeping Mask EX pot with label",
     sourceUrl: "https://us.laneige.com/products/lip-sleeping-mask",
   },
   {
@@ -367,6 +378,8 @@ export const PRODUCTS: Product[] = [
     stock: null,
     isNew: true,
     seed: "mediheal-teatree",
+    image: "/products/mediheal-tea-tree-essential-mask.jpg",
+    imageAlt: "MEDIHEAL Tea Tree Essential Mask sheet mask box",
     sourceUrl: "https://mediheal.com/products/teatree-essential-mask-calming-moisture",
   },
 ];

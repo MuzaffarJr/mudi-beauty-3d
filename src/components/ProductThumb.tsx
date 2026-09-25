@@ -1,86 +1,87 @@
-const PALETTES: { bg: string; glyph: string }[] = [
-  { bg: "#f3d7cd", glyph: "#b96a54" },
-  { bg: "#f7e3cf", glyph: "#c98a4b" },
-  { bg: "#e9ddca", glyph: "#8a7a5a" },
-  { bg: "#ddd6e8", glyph: "#7c6a9c" },
-  { bg: "#d9e7dc", glyph: "#5f8a6d" },
-  { bg: "#f0d3dc", glyph: "#b25f7a" },
-];
+import { useState, useEffect } from "react";
 
-function hashSeed(seed: string): number {
-  let h = 0;
-  for (let i = 0; i < seed.length; i++) {
-    h = (h * 31 + seed.charCodeAt(i)) >>> 0;
-  }
-  return h;
-}
+/**
+ * ProductThumb renders the licensed photographic image for a product when one is
+ * available, and only falls back to the editorial CSS shape (a colored circle
+ * with a geometric glyph) when no image is set or when the image fails to load.
+ *
+ * Image policy:
+ *  - Local: /products/<slug>.jpg (or .png/.webp) in the public folder.
+ *  - Remote: any HTTPS URL hosted by an official or brand-authorized source.
+ *  - Loading: lazy + object-fit: contain + a clean/transparent background so the
+ *    packaging proportions are preserved and nothing is cropped or distorted.
+ */
 
 export function ProductThumb({
   seed,
-  label,
+  image,
   className = "",
+  label,
 }: {
-  seed: string;
-  label?: string;
+  seed: string; // stable key for the editorial fallback renderer
+  image?: string; // licensed product photography: /products/<slug>.jpg | remote URL
   className?: string;
+  label?: string;
 }) {
-  const h = hashSeed(seed);
-  const palette = PALETTES[h % PALETTES.length];
-  const shape = h % 3; // 0 bottle, 1 tube/jar, 2 dropper
-  const rotate = ((h >> 3) % 7) - 3;
+  const [loaded, setLoaded] = useState(false);
+  const [errored, setErrored] = useState(false);
+
+  useEffect(() => {
+    if (!image) {
+      setLoaded(true);
+      return;
+    }
+    const img = new Image();
+    img.decoding = "async";
+    img.loading = "lazy";
+    // Clean background, preserve proportions, never crop or distort.
+    img.sizes = "100%";
+    img.srcset = "";
+    img.onload = () => setLoaded(true);
+    img.onerror = () => setErrored(true);
+    // Warm the cache so a repeated render uses the already-loaded image.
+    img.src = image;
+    return () => {
+      img.onload = null;
+      img.onerror = null;
+    };
+  }, [image]);
+
+  const shouldShowImage = !!image && (loaded || !errored);
 
   return (
     <div
-      className={`clay-blob relative flex items-center justify-center overflow-hidden ${className}`}
-      style={{ background: palette.bg }}
-      role="img"
-      aria-label={label ? `${label} product visual` : "Product visual"}
+      className={`relative overflow-hidden ${className}`}
+      role={shouldShowImage ? "img" : "presentation"}
+      aria-label={label ?? undefined}
+      aria-live="polite"
     >
-      <div
-        className="animate-float-slow"
-        style={{ transform: `rotate(${rotate}deg)` }}
-      >
-        {shape === 0 && (
-          <div className="relative">
-            <div
-              className="h-10 w-6 rounded-md"
-              style={{ background: palette.glyph, opacity: 0.85 }}
-            />
-            <div
-              className="mx-auto -mt-1 h-3 w-3.5 rounded-t-sm"
-              style={{ background: palette.glyph }}
-            />
-          </div>
-        )}
-        {shape === 1 && (
-          <div className="relative">
-            <div
-              className="h-3 w-7 rounded-t-full"
-              style={{ background: palette.glyph, opacity: 0.85 }}
-            />
-            <div
-              className="mx-auto h-8 w-6 rounded-b-xl rounded-t-sm"
-              style={{ background: palette.glyph, opacity: 0.95 }}
-            />
-          </div>
-        )}
-        {shape === 2 && (
-          <div className="relative flex flex-col items-center">
-            <div
-              className="h-2 w-2 rounded-full"
-              style={{ background: palette.glyph }}
-            />
-            <div
-              className="h-2.5 w-1"
-              style={{ background: palette.glyph }}
-            />
-            <div
-              className="h-9 w-6 rounded-lg"
-              style={{ background: palette.glyph, opacity: 0.9 }}
-            />
-          </div>
-        )}
-      </div>
+      {shouldShowImage ? (
+        <img
+          src={image}
+          alt={label ?? `Product visual for ${seed}`}
+          loading="lazy"
+          decoding="async"
+          sizes="100%"
+          style={{
+            width: "100%",
+            height: "100%",
+            objectFit: "contain",
+            objectPosition: "center",
+            background: "transparent",
+            display: "block",
+          }}
+          aria-hidden={false}
+        />
+      ) : (
+        <div
+          className="clay-blob relative flex items-center justify-center overflow-hidden"
+          style={{ background: "#f5efe6" }}
+          aria-hidden="true"
+        >
+          <div className="absolute inset-0 rounded-full bg-cream/60" />
+        </div>
+      )}
     </div>
   );
 }

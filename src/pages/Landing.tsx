@@ -89,18 +89,18 @@ export default function Landing() {
           </div>
 
           {/* 3D stage */}
-          <div className="relative min-h-[380px] bg-gradient-to-br from-cream via-card to-blush/40 lg:min-h-full">
-            <div
-              className="pointer-events-none absolute inset-0 opacity-60"
-              style={{
-                background:
-                  "radial-gradient(38rem 24rem at 70% 20%, hsl(22 80% 88% / 0.55), transparent 65%), radial-gradient(30rem 20rem at 20% 85%, hsl(165 45% 82% / 0.4), transparent 60%)",
-              }}
-              aria-hidden
-            />
-            <Suspense fallback={<div className="size-full" />}>
-              {heroReady && <Hero3D />}
-            </Suspense>
+        <div className="relative min-h-[380px] bg-gradient-to-br from-cream via-card to-blush/40 lg:min-h-full">
+          <div
+            className="pointer-events-none absolute inset-0 opacity-60"
+            style={{
+              background:
+                "radial-gradient(38rem 24rem at 70% 20%, hsl(22 80% 88% / 0.55), transparent 65%), radial-gradient(30rem 20rem at 20% 85%, hsl(165 45% 82% / 0.4), transparent 60%)",
+            }}
+            aria-hidden
+          />
+          <Suspense fallback={<div className="size-full" />}>
+            {heroReady && <Hero3D image="/products/cosrx-snail-96-mucin-essence.jpg" />}
+          </Suspense>
             {/* callouts over the stage */}
             <div className="clay-card-sm absolute left-4 top-5 hidden rounded-2xl px-4 py-2.5 sm:block">
               <p className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground">Hero pick</p>

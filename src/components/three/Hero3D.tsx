@@ -67,7 +67,7 @@ function useParallax(strength = 10) {
   return ref;
 }
 
-export function Hero3D() {
+export function Hero3D({ image }: { image?: string }) {
   const webgl = useWebGLAvailable();
   const containerRef = useRef<HTMLDivElement>(null);
   const inView = useInView(containerRef, true);
@@ -107,25 +107,28 @@ export function Hero3D() {
         </div>
       ) : (
         <div className="flex h-full w-full items-center justify-center">
-          <div className="relative h-full max-h-[520px] w-full max-w-[560px]">
-            <ProductThumb
+          <div className="relative h-full max-h-[520px] w-full max-w-[560px]">            <ProductThumb
               seed="joseon-sun-3"
-              label="Relief Sun bottle"
+              image="/products/round-lab-1025-dokdo-toner.jpg"
+              label="1025 Dokdo Toner"
               className="absolute left-[6%] top-[8%] h-40 w-40 animate-float"
             />
             <ProductThumb
               seed="cosrx-snail-2"
-              label="Snail essence jar"
+              image="/products/cosrx-snail-96-mucin-essence.jpg"
+              label="Advanced Snail 96 Essence"
               className="absolute right-[4%] top-[22%] h-32 w-32 animate-float-slow"
             />
             <ProductThumb
               seed="laneige-lip-4"
-              label="Lip sleeping mask"
+              image="/products/laneige-lip-sleeping-mask-ex.jpg"
+              label="Lip Sleeping Mask EX"
               className="absolute bottom-[10%] left-[24%] h-28 w-28 animate-float"
             />
             <ProductThumb
               seed="sulwhasoo-cream-6"
-              label="Ginseng cream jar"
+              image="/products/torriden-dive-in-serum.jpg"
+              label="DIVE-IN Serum"
               className="absolute bottom-[24%] right-[18%] h-24 w-24 animate-float-slow"
             />
           </div>
