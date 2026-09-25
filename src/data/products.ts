@@ -1,20 +1,19 @@
-/**
- * MuDi Beauty — product catalog.
+/** MuDi Beauty — product catalog.
  *
- * Facts verified against official brand sources (Sept 2026):
- *  - COSRX — Advanced Snail 96 Mucin Power Essence — cosrx.com
- *  - Beauty of Joseon — Glow Serum: Propolis + Niacinamide — beautyofjoseon.com
- *  - Round Lab — 1025 Dokdo Toner — roundlab.com
- *  - Torriden — DIVE-IN Serum — torriden.us
- *  - Laneige — Lip Sleeping Mask EX — us.laneige.com
- *  - Mediheal — Tea Tree Essential Mask — mediheal.com
+ * Facts verified against official brand sources (Sept 2026).
+ * - COSRX — Advanced Snail 96 Mucin Power Essence — cosrx.com
+ * - Beauty of Joseon — Glow Serum: Propolis + Niacinamide — beautyofjoseon.com
+ * - Round Lab — 1025 Dokdo Toner — roundlab.com
+ * - Torriden — DIVE-IN Serum — torriden.us
+ * - Laneige — Lip Sleeping Mask EX — us.laneige.com
+ * - Mediheal — Tea Tree Essential Mask — mediheal.com
  *
  * Data policy:
- *  - Only claims published by the brands themselves (ingredients, usage steps,
- *    brand marketing language). No invented certifications, clinical results,
- *    ratings, review counts, or Uzbekistan retail prices.
- *  - `price` is null until real retail pricing is confirmed for Uzbekistan;
- *    the UI renders "Price coming soon" and disables purchase.
+ * - Only claims published by the brands themselves (ingredients, usage steps,
+ *   brand marketing language). No invented certifications, clinical results,
+ *   ratings, review counts, or Uzbekistan retail prices.
+ * - `price` is null until real retail pricing is confirmed for Uzbekistan;
+ *   the UI renders "Price coming soon" and disables purchase.
  */
 
 export type SkinConcern =
@@ -93,12 +92,6 @@ export interface Product {
   sourceUrl?: string; // official brand product page, shown as provenance
 }
 
-/**
- * Photography policy: drop licensed product photos at
- * `public/products/<slug>.jpg` and set `image: "/products/<slug>.jpg"`.
- * Until then the editorial fallback renderer is used.
- */
-
 export const BRANDS: Brand[] = [
   {
     id: "cosrx",
@@ -113,7 +106,7 @@ export const BRANDS: Brand[] = [
     id: "beautyofjoseon",
     name: "Beauty of Joseon",
     country: "South Korea",
-    tagline: "Hanbang, reimagined",
+    tagline: "Hanhbang, reimagined",
     description:
       "Joseon-era herbal ingredients paired with modern dermatology — gentle daily formulas built on rice, propolis and ginseng.",
     officialSite: "https://beautyofjoseon.com",
@@ -382,7 +375,12 @@ export const brandById = (id: string) => BRANDS.find((b) => b.id === id);
 
 /** Renders a price, or the "coming soon" state when retail pricing is not yet set. */
 export const formatPrice = (value: number) =>
-  `$${value.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+  `${
+    value.toLocaleString("en-US", {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    })
+  }`;
 
 /** Shipping estimate for Uzbekistan (placeholder rates, confirmed at checkout). */
 export const FREE_SHIPPING_THRESHOLD = 60;

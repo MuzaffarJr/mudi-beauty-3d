@@ -65,6 +65,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
     setLines((prev) => {
       const key = { productId: product.id, shade };
       const existing = prev.find((l) => sameLine(l, key));
+      const price = product.price ?? 0;
       if (existing) {
         return prev.map((l) =>
           sameLine(l, key) ? { ...l, quantity: Math.min(l.quantity + quantity, 99) } : l,
@@ -77,7 +78,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
           slug: product.slug,
           name: product.name,
           brandName: product.brandId.toUpperCase(),
-          price: product.price,
+          price,
           seed: product.seed,
           shade,
           volume: product.volume,
