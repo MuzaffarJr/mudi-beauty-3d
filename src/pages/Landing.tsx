@@ -152,7 +152,8 @@ export default function Landing() {
 
           <div className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-4">
             {CATEGORY_TILES.map(({ id, tint, icon: Icon }) => {
-              const cat = CATEGORIES.find((c) => c.id === id)!;
+              const cat = CATEGORIES.find((c) => c.id === id);
+              if (!cat) return null;
               return (
                 <Link
                   key={id}

@@ -9,6 +9,8 @@ import {
 } from "react";
 import type { Product } from "@/data/products";
 
+/** Cart line stored in the bag. `price` is rendered as 0 until real MuDi retail
+ * pricing is confirmed for Uzbekistan (catalog `price` is number | null). */
 export interface CartLine {
   productId: string;
   slug: string;

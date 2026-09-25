@@ -56,7 +56,7 @@ export interface Brand {
 }
 
 export interface Category {
-  id: ProductType;
+  id: string;
   label: string;
   category: ProductCategory;
   blurb: string;
@@ -155,6 +155,7 @@ export const CATEGORIES: Category[] = [
   { id: "serum", label: "Serum", category: "skincare", blurb: "Targeted treatment layers" },
   { id: "mask", label: "Masks", category: "skincare", blurb: "Sheet & sleeping treatments" },
   { id: "lip", label: "Lip care", category: "makeup", blurb: "Overnight & daily lip care" },
+  { id: "sunscreen", label: "Sunscreen", category: "skincare", blurb: "SPF protection is non-negotiable" },
 ];
 
 export const CONCERN_LABELS: Record<SkinConcern, string> = {

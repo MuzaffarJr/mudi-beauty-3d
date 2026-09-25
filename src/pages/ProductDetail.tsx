@@ -53,6 +53,7 @@ export default function ProductDetail() {
   if (!product) return <NotFound />;
 
   const brand = brandById(product.brandId);
+  if (!brand) return <NotFound />;
   const wished = has(product.id);
   const shades = product.shades ?? [];
   const onSale = product.compareAtPrice && product.compareAtPrice > product.price;
