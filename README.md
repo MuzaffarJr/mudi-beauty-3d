@@ -1,5 +1,20 @@
 ## Overview
 
+### Product imagery
+
+The six catalog products are real items from COSRX, Beauty of Joseon, Round Lab, Torriden, LANEIGE, and MEDIHEAL. Product photographs load directly from the brands' official image hosts, and each product detail links to its official product page. The images are not copied into this repository. If a brand changes an image URL or blocks remote display, the UI shows a neutral fallback.
+
+This is a portfolio concept, not a live retailer. Local prices, stock, shipping, and returns are unconfirmed; purchasing stays unavailable until those details are supplied. Obtain image usage permission from the brands before using this concept as a commercial storefront.
+
+| Product | Official product page |
+| :-- | :-- |
+| COSRX Advanced Snail 96 Mucin Power Essence | [COSRX](https://www.cosrx.com/products/advanced-snail-96-mucin-power-essence) |
+| Beauty of Joseon Glow Serum | [Beauty of Joseon](https://beautyofjoseon.com/products/glow-serum-propolis-niacinamide) |
+| Round Lab 1025 Dokdo Toner | [Round Lab](https://roundlab.com/products/1025-dokdo-toner) |
+| Torriden DIVE-IN Serum | [Torriden](https://torriden.us/products/dive-in-serum) |
+| LANEIGE Lip Sleeping Mask (Berry) | [LANEIGE](https://us.laneige.com/products/lip-sleeping-mask) |
+| MEDIHEAL Teatree Essential Mask | [MEDIHEAL](https://mediheal.com/products/teatree-essential-mask-calming-moisture) |
+
 This project uses the following tech stack:
 - Vite
 - Typescript

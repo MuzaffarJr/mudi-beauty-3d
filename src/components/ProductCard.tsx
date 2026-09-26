@@ -16,7 +16,7 @@ export function ProductCard({ product }: { product: Product }) {
   const brand = brandById(product.brandId);
   const wished = has(product.id);
   const hasPrice = product.price != null;
-  const onSale = product.compareAtPrice != null && product.compareAtPrice > product.price && hasPrice;
+  const onSale = product.price != null && product.compareAtPrice != null && product.compareAtPrice > product.price;
 
   const handleQuickAdd = () => {
     addLine(product);
@@ -59,7 +59,7 @@ export function ProductCard({ product }: { product: Product }) {
           )}
           {product.isBestseller && !onSale && !product.isNew && (
             <Badge className="rounded-full bg-peach px-2.5 py-1 text-[11px] font-bold text-charcoal">
-              Bestseller
+              Featured
             </Badge>
           )}
         </div>
@@ -99,9 +99,13 @@ export function ProductCard({ product }: { product: Product }) {
         </Link>
 
         <div className="mt-1.5 flex items-center gap-1 text-xs text-muted-foreground">
-          <Star className="size-3.5 fill-primary text-primary" aria-hidden />
-          <span className="font-bold text-charcoal">{product.rating}</span>
-          <span>({product.reviewCount})</span>
+          {product.rating != null && product.reviewCount != null && (
+            <>
+              <Star className="size-3.5 fill-primary text-primary" aria-hidden />
+              <span className="font-bold text-charcoal">{product.rating}</span>
+              <span>({product.reviewCount})</span>
+            </>
+          )}
           <span className="ml-auto font-semibold">{product.volume}</span>
         </div>
 

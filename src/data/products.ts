@@ -87,7 +87,7 @@ export interface Product {
   isBestseller?: boolean;
   isNew?: boolean;
   seed: string; // stable key for the editorial fallback renderer
-  image?: string; // licensed product photography (local: /products/<slug>.jpg | remote URL)
+  image?: string; // brand-hosted product photography; see sourceUrl for attribution
   imageAlt?: string;
   imageFallback?: boolean; // set true to force fallback renderer; false to require real photo
   sourceUrl?: string; // official brand product page, shown as provenance
@@ -203,8 +203,8 @@ export const PRODUCTS: Product[] = [
     stock: null,
     isBestseller: true,
     seed: "cosrx-snail-96",
-    image: "/products/cosrx-snail-96-mucin-essence.jpg",
-    imageAlt: "COSRX Advanced Snail 96 Mucin Power Essence dark blue bottle",
+    image: "https://www.cosrx.com/cdn/shop/files/james_800x1067_1_1_4e9750cc-2cd6-4817-ace5-be2305a85806_1200x1200.jpg?v=1763111577",
+    imageAlt: "COSRX Advanced Snail 96 Mucin Power Essence bottle",
     sourceUrl: "https://www.cosrx.com/products/advanced-snail-96-mucin-power-essence",
   },
   {
@@ -237,7 +237,7 @@ export const PRODUCTS: Product[] = [
     stock: null,
     isBestseller: true,
     seed: "boj-glow-serum",
-    image: "/products/boj-glow-serum-propolis-niacinamide.jpg",
+    image: "https://beautyofjoseon.com/cdn/shop/files/glow-serum-propolis-niacinamide-1-front.webp?v=1770278801&width=800",
     imageAlt: "Beauty of Joseon Glow Serum Propolis + Niacinamide dropper bottle",
     sourceUrl: "https://beautyofjoseon.com/products/glow-serum-propolis-niacinamide",
   },
@@ -272,8 +272,8 @@ export const PRODUCTS: Product[] = [
     stock: null,
     isBestseller: true,
     seed: "round-lab-dokdo",
-    image: "/products/round-lab-1025-dokdo-toner.jpg",
-    imageAlt: "Round Lab 1025 Dokdo Toner cream bottle with label",
+    image: "https://roundlab.com/cdn/shop/files/Dokdo_Toner_2025.png?v=1772851199&width=800",
+    imageAlt: "Round Lab 1025 Dokdo Toner bottles",
     sourceUrl: "https://roundlab.com/products/1025-dokdo-toner",
   },
   {
@@ -308,7 +308,7 @@ export const PRODUCTS: Product[] = [
     stock: null,
     isBestseller: true,
     seed: "torriden-dive-in",
-    image: "/products/torriden-dive-in-serum.jpg",
+    image: "https://torriden.us/cdn/shop/files/DIVEINSerum1_631ac0e3-a77b-422a-a806-bf34477cac19.jpg?v=1753346213&width=800",
     imageAlt: "Torriden DIVE-IN Serum dropper bottle with label",
     sourceUrl: "https://torriden.us/products/dive-in-serum",
   },
@@ -316,13 +316,13 @@ export const PRODUCTS: Product[] = [
     id: "p-laneige-lip-mask-ex",
     slug: "laneige-lip-sleeping-mask-ex",
     brandId: "laneige",
-    name: "Lip Sleeping Mask EX",
+    name: "Lip Sleeping Mask (Berry)",
     type: "mask",
     category: "skincare",
     price: null,
     rating: null,
     reviewCount: null,
-    volume: "20 g",
+    volume: "8 g (Berry pictured)",
     blurb: "The world's most-loved overnight lip treatment.",
     description:
       "LANEIGE's iconic leave-on lip mask melts over lips overnight with its Moisture Wrap™ technology — a breathable moisture barrier of murumuru and shea butter sealed with antioxidant berry fruit complex and vitamin C. One generous layer before bed, softer, smoother lips by morning. Includes a spatula for hygienic application.",
@@ -342,10 +342,9 @@ export const PRODUCTS: Product[] = [
       "PM: apply generously before bed for intensive overnight moisture. AM: apply a thin layer to prep lips before the rest of your lip routine. Use the included spatula and gently wipe off any residue in the morning.",
     stock: null,
     isBestseller: true,
-    isNew: true,
     seed: "laneige-lip-ex",
-    image: "/products/laneige-lip-sleeping-mask-ex.jpg",
-    imageAlt: "LANEIGE Lip Sleeping Mask EX pot with label",
+    image: "https://us.laneige.com/cdn/shop/files/LSM_Berry_Infographic_2000x2000Product1_1.jpg?v=1785772326&width=800",
+    imageAlt: "LANEIGE Lip Sleeping Mask Berry jars, 8 g",
     sourceUrl: "https://us.laneige.com/products/lip-sleeping-mask",
   },
   {
@@ -376,10 +375,9 @@ export const PRODUCTS: Product[] = [
     howToUse:
       "After cleansing and toning, apply the mask and smooth it to fit the face. Leave on for 10–20 minutes, remove, then gently press the remaining essence into the skin.",
     stock: null,
-    isNew: true,
     seed: "mediheal-teatree",
-    image: "/products/mediheal-tea-tree-essential-mask.jpg",
-    imageAlt: "MEDIHEAL Tea Tree Essential Mask sheet mask box",
+    image: "https://mediheal.com/cdn/shop/files/thumbnail_Teatree-Essential-Mask-Calming-Moisture_shadow_3.png?v=1787243973&width=800",
+    imageAlt: "MEDIHEAL Teatree Essential Mask sachet",
     sourceUrl: "https://mediheal.com/products/teatree-essential-mask-calming-moisture",
   },
 ];

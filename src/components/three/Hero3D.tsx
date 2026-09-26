@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { ProductThumb } from "@/components/ProductThumb";
+import { PRODUCTS } from "@/data/products";
 
 function useWebGLAvailable(): boolean {
   const [ok, setOk] = useState(false);
@@ -98,36 +99,44 @@ export function Hero3D({ image }: { image?: string }) {
     <div
       ref={containerRef}
       className="relative h-full w-full"
-      aria-hidden={render3D ? "true" : undefined}
       data-testid="hero-3d"
     >
       {render3D ? (
-        <div ref={parallaxRef} className="h-full w-full transition-transform duration-300 ease-out will-change-transform">
-          <Scene />
+        <div className="relative h-full w-full">
+          <div ref={parallaxRef} className="h-full w-full transition-transform duration-300 ease-out will-change-transform" aria-hidden="true">
+            <Scene />
+          </div>
+          <div className="clay-card-sm absolute bottom-5 left-5 flex items-center gap-3 rounded-2xl bg-card/90 p-2 pr-4 shadow-lg sm:bottom-8 sm:left-8">
+            <ProductThumb seed="cosrx-snail-96" image={image ?? PRODUCTS[0].image} label={PRODUCTS[0].name} className="size-16 shrink-0 rounded-xl" />
+            <div>
+              <p className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">The real product</p>
+              <p className="max-w-36 text-xs font-bold leading-snug text-charcoal">COSRX Snail 96 Essence</p>
+            </div>
+          </div>
         </div>
       ) : (
         <div className="flex h-full w-full items-center justify-center">
           <div className="relative h-full max-h-[520px] w-full max-w-[560px]">            <ProductThumb
               seed="joseon-sun-3"
-              image="/products/round-lab-1025-dokdo-toner.jpg"
+              image={PRODUCTS[2].image}
               label="1025 Dokdo Toner"
               className="absolute left-[6%] top-[8%] h-40 w-40 animate-float"
             />
             <ProductThumb
               seed="cosrx-snail-2"
-              image="/products/cosrx-snail-96-mucin-essence.jpg"
+              image={image ?? PRODUCTS[0].image}
               label="Advanced Snail 96 Essence"
               className="absolute right-[4%] top-[22%] h-32 w-32 animate-float-slow"
             />
             <ProductThumb
               seed="laneige-lip-4"
-              image="/products/laneige-lip-sleeping-mask-ex.jpg"
-              label="Lip Sleeping Mask EX"
+              image={PRODUCTS[4].image}
+              label="Lip Sleeping Mask Berry"
               className="absolute bottom-[10%] left-[24%] h-28 w-28 animate-float"
             />
             <ProductThumb
               seed="sulwhasoo-cream-6"
-              image="/products/torriden-dive-in-serum.jpg"
+              image={PRODUCTS[3].image}
               label="DIVE-IN Serum"
               className="absolute bottom-[24%] right-[18%] h-24 w-24 animate-float-slow"
             />

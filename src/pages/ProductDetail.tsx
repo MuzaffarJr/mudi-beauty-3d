@@ -19,15 +19,12 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import {
-  BadgeCheck,
+  ExternalLink,
   Heart,
   Minus,
-  Package,
   Plus,
-  RotateCcw,
   ShoppingBag,
   Star,
-  Truck,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { NotFound } from "@/pages/NotFound";
@@ -58,7 +55,7 @@ export default function ProductDetail() {
   // Null-price products cannot be purchased yet.
   const hasPrice = product.price != null;
   const isAvailable = hasPrice && (product.stock ?? 0) > 0;
-  const onSale = product.compareAtPrice != null && product.compareAtPrice > product.price && hasPrice;
+  const onSale = product.price != null && product.compareAtPrice != null && product.compareAtPrice > product.price;
   const wished = has(product.id);
   const shades = product.shades ?? [];
 
@@ -96,6 +93,7 @@ export default function ProductDetail() {
             />
             <ProductThumb
               seed={product.seed}
+              image={product.image}
               label={product.name}
               className="size-60 animate-float sm:size-72"
             />
@@ -121,12 +119,15 @@ export default function ProductDetail() {
                 {product.name}
               </h1>
               <div className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1 text-sm">
-                <span className="flex items-center gap-1 font-bold text-charcoal">
-                  <Star className="size-4 fill-primary text-primary" aria-hidden />
-                  {product.rating}
-                </span>
-                <span className="text-muted-foreground">{product.reviewCount} reviews</span>
-                <span className="text-muted-foreground">·</span>
+                {product.rating != null && product.reviewCount != null && (
+                  <>
+                    <span className="flex items-center gap-1 font-bold text-charcoal">
+                      <Star className="size-4 fill-primary text-primary" aria-hidden />
+                      {product.rating}
+                    </span>
+                    <span className="text-muted-foreground">{product.reviewCount} reviews ·</span>
+                  </>
+                )}
                 <span className="text-muted-foreground">{product.volume}</span>
               </div>
             </div>
@@ -198,7 +199,7 @@ export default function ProductDetail() {
               </div>
               <Button
                 onClick={handleAdd}
-                disabled={product.stock === 0}
+                disabled={!isAvailable}
                 className="clay-btn h-13 flex-1 px-6 text-base font-bold"
               >
                 <ShoppingBag className="size-4.5" />
@@ -215,27 +216,20 @@ export default function ProductDetail() {
             </div>
 
             <p className="text-xs font-semibold text-muted-foreground">
-              {product.stock !== null && product.stock > 10
+              {product.stock === null
+                ? "Availability and local pricing to be confirmed"
+                : product.stock > 10
                 ? "In stock — ships today"
-                : product.stock !== null && product.stock > 0
+                : product.stock > 0
                   ? `Only ${product.stock} left in stock`
                   : "Currently sold out"}
             </p>
 
-            {/* Trust grid */}
-            <div className="grid grid-cols-2 gap-2.5">
-              {[
-                { icon: BadgeCheck, label: "100% authentic Korean origin" },
-                { icon: Truck, label: "Tashkent delivery in 2–4 days" },
-                { icon: RotateCcw, label: "14-day free returns" },
-                { icon: Package, label: "Secure checkout" },
-              ].map(({ icon: Icon, label }) => (
-                <div key={label} className="clay-card-sm flex items-center gap-2.5 rounded-2xl px-3.5 py-3">
-                  <Icon className="size-4.5 shrink-0 text-primary" aria-hidden />
-                  <span className="text-xs font-semibold text-charcoal/80">{label}</span>
-                </div>
-              ))}
-            </div>
+            {product.sourceUrl && (
+              <a href={product.sourceUrl} target="_blank" rel="noopener noreferrer" className="inline-flex w-fit items-center gap-2 text-sm font-semibold text-primary underline-offset-4 hover:underline">
+                View on {brand.name}'s official site <ExternalLink className="size-4" aria-hidden />
+              </a>
+            )}
 
             {/* Details accordion */}
             <Accordion type="multiple" defaultValue={["benefits"]} className="gap-0">

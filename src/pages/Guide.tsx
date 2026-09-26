@@ -97,7 +97,7 @@ export default function Guide() {
       score: p.concerns.filter((c) => selected.includes(c)).length,
     }))
       .filter((s) => s.score > 0)
-      .sort((a, b) => b.score - a.score || b.product.rating - a.product.rating);
+      .sort((a, b) => b.score - a.score || (b.product.rating ?? 0) - (a.product.rating ?? 0));
     return scored.slice(0, 3).map((s) => s.product);
   }, [selected]);
 
@@ -295,18 +295,17 @@ export default function Guide() {
             <ShieldCheck className="size-6 text-charcoal/70" aria-hidden />
           </span>
           <h2 className="max-w-[30ch] font-display text-2xl font-semibold text-charcoal">
-            Authenticity you can verify
+            Explore the original products
           </h2>
           <p className="max-w-[64ch] text-sm leading-relaxed text-muted-foreground">
-            Every MuDi product is imported through official Korean
-            distribution, arrives with Korean labeling and batch codes, and is
-            stored in Tashkent climate-controlled stock. If a product ever
-            seems off, our 14-day return policy covers it — no questions.
+            The catalog links directly to each Korean brand's product page,
+            so you can compare its packaging and ingredients. MuDi is currently
+            a design concept; local stock and purchase options are not yet available.
           </p>
           <Button asChild className="clay-btn mt-1 h-12 px-7 text-sm font-bold">
             <Link to="/shop">Browse the collection</Link>
           </Button>
-          <ProductThumb seed="joseon-glow-1" label="Glow serum" className="size-20 opacity-90" />
+          <ProductThumb seed="joseon-glow-1" image={PRODUCTS[1].image} label={PRODUCTS[1].name} className="size-20 opacity-90" />
         </section>
       </div>
     </main>

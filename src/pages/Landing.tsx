@@ -6,14 +6,12 @@ import { ProductThumb } from "@/components/ProductThumb";
 import { CATEGORIES, PRODUCTS } from "@/data/products";
 import {
   ArrowRight,
-  BadgeCheck,
   Droplets,
   Leaf,
-  ShieldCheck,
   Sparkles,
   Star,
   Sun,
-  Truck,
+  ExternalLink,
 } from "lucide-react";
 
 const Hero3D = lazy(() =>
@@ -35,7 +33,7 @@ export default function Landing() {
   }, []);
 
   const bestsellers = PRODUCTS.filter((p) => p.isBestseller).slice(0, 4);
-  const newArrivals = PRODUCTS.filter((p) => p.isNew).slice(0, 3);
+  const moreToExplore = PRODUCTS.slice(-2);
 
   return (
     <div className="pb-4">
@@ -58,13 +56,13 @@ export default function Landing() {
               perfected by science.
             </h1>
             <p className="max-w-[46ch] text-base leading-relaxed text-muted-foreground animate-fade-up [animation-delay:160ms]">
-              MuDi Beauty 3D brings premium K-beauty to Uzbekistan — authentic
-              serums, sunscreens, and glass-skin rituals, presented in
-              interactive 3D and delivered to your door.
+              Explore real Korean skincare from the brands behind it — product
+              photography, ingredients, and routines brought together in an
+              interactive 3D concept store.
             </p>
             <div className="flex flex-wrap items-center gap-3 animate-fade-up [animation-delay:240ms]">
               <Button asChild className="clay-btn h-13 px-7 text-base font-bold">
-                <Link to="/shop">Shop bestsellers</Link>
+                <Link to="/shop">Explore the collection</Link>
               </Button>
               <Button asChild variant="ghost" className="clay-btn-soft h-13 px-6 text-base font-semibold">
                 <Link to="/guide">
@@ -75,9 +73,9 @@ export default function Landing() {
             </div>
             <dl className="mt-2 flex flex-wrap gap-x-8 gap-y-3 animate-fade-up [animation-delay:320ms]">
               {[
-                ["4.9★", "average rating"],
-                ["1,200+", "happy customers"],
-                ["100%", "authentic K-beauty"],
+                ["6", "real Korean products"],
+                ["6", "official brand sources"],
+                ["3D", "interactive experience"],
               ].map(([stat, label]) => (
                 <div key={label}>
                   <dt className="sr-only">{label}</dt>
@@ -99,28 +97,28 @@ export default function Landing() {
             aria-hidden
           />
           <Suspense fallback={<div className="size-full" />}>
-            {heroReady && <Hero3D image="/products/cosrx-snail-96-mucin-essence.jpg" />}
+            {heroReady && <Hero3D image={PRODUCTS[0].image} />}
           </Suspense>
             {/* callouts over the stage */}
             <div className="clay-card-sm absolute left-4 top-5 hidden rounded-2xl px-4 py-2.5 sm:block">
               <p className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground">Hero pick</p>
-              <p className="text-sm font-bold text-charcoal">Glow Deep Serum</p>
+              <p className="text-sm font-bold text-charcoal">COSRX Snail 96 Essence</p>
             </div>
             <div className="clay-card-sm absolute bottom-5 right-4 hidden rounded-2xl px-4 py-2.5 sm:block">
-              <p className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground">From</p>
-              <p className="text-sm font-bold text-charcoal">$9.50 · Tashkent in 2 days</p>
+              <p className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground">Official product</p>
+              <p className="text-sm font-bold text-charcoal">100 ml · Price coming soon</p>
             </div>
           </div>
         </div>
       </section>
 
       {/* ============ TRUST STRIP ============ */}
-      <section aria-label="Why trust MuDi Beauty" className="px-3 pt-3 sm:px-5">
+      <section aria-label="About the collection" className="px-3 pt-3 sm:px-5">
         <div className="mx-auto grid max-w-6xl gap-3 sm:grid-cols-3">
           {[
-            { icon: BadgeCheck, title: "Verified Korean origin", body: "Every item sourced from official Seoul distributors." },
-            { icon: Truck, title: "2–4 day UZ delivery", body: "Tashkent same-week, regions 2–4 days. Free over $60." },
-            { icon: ShieldCheck, title: "14-day easy returns", body: "Sealed products, no-questions returns within Uzbekistan." },
+            { icon: ExternalLink, title: "Official product sources", body: "Each product links to its brand's product page for reference." },
+            { icon: Sparkles, title: "Real product photography", body: "See the original packaging in imagery hosted by the brands." },
+            { icon: Leaf, title: "Concept collection", body: "Explore routines while local pricing and availability are being confirmed." },
           ].map(({ icon: Icon, title, body }) => (
             <div key={title} className="clay-card-sm flex items-start gap-3.5 rounded-[calc(var(--radius)+0.3rem)] p-5">
               <span className="clay-blob flex size-11 shrink-0 items-center justify-center bg-mint">
@@ -179,11 +177,11 @@ export default function Landing() {
             <div>
               <p className="text-xs font-bold uppercase tracking-[0.18em] text-primary">Most loved</p>
               <h2 id="bestsellers-heading" className="mt-1 font-display text-3xl font-semibold text-charcoal">
-                Bestsellers in Uzbekistan
+                Featured K-beauty essentials
               </h2>
             </div>
             <Link to="/shop?filter=bestsellers" className="text-sm font-bold text-charcoal underline-offset-4 hover:underline">
-              Shop all bestsellers →
+              View featured products →
             </Link>
           </div>
           <div className="mt-6 grid grid-cols-2 gap-4 lg:grid-cols-4">
@@ -199,9 +197,9 @@ export default function Landing() {
         <div className="clay-card mx-auto grid max-w-6xl gap-0 overflow-hidden rounded-[calc(var(--radius)+1rem)] lg:grid-cols-[1fr_1.1fr]">
           <div className="relative flex items-center justify-center bg-gradient-to-br from-blush/70 via-card to-peach/60 p-10">
             <div className="relative">
-              <ProductThumb seed="cosrx-snail-2" label="Snail essence" className="size-44 animate-float" />
-              <ProductThumb seed="laneige-lip-4" label="Lip mask" className="absolute -right-16 -top-8 size-24 animate-float-slow" />
-              <ProductThumb seed="joseon-sun-3" label="Relief Sun" className="absolute -bottom-10 -left-14 size-28 animate-float" />
+              <ProductThumb seed="cosrx-snail-2" image={PRODUCTS[0].image} label={PRODUCTS[0].name} className="size-44 animate-float" />
+              <ProductThumb seed="laneige-lip-4" image={PRODUCTS[4].image} label={PRODUCTS[4].name} className="absolute -right-16 -top-8 size-24 animate-float-slow" />
+              <ProductThumb seed="boj-glow-3" image={PRODUCTS[1].image} label={PRODUCTS[1].name} className="absolute -bottom-10 -left-14 size-28 animate-float" />
             </div>
           </div>
           <div className="flex flex-col justify-center gap-5 p-8 sm:p-12">
@@ -238,22 +236,22 @@ export default function Landing() {
         </div>
       </section>
 
-      {/* ============ NEW ARRIVALS ============ */}
+      {/* ============ MORE TO EXPLORE ============ */}
       <section aria-labelledby="new-heading" className="px-3 pt-16 sm:px-5">
         <div className="mx-auto max-w-6xl">
           <div className="flex flex-wrap items-end justify-between gap-3">
             <div>
-              <p className="text-xs font-bold uppercase tracking-[0.18em] text-primary">Fresh from Seoul</p>
+              <p className="text-xs font-bold uppercase tracking-[0.18em] text-primary">The collection</p>
               <h2 id="new-heading" className="mt-1 font-display text-3xl font-semibold text-charcoal">
-                New arrivals
+                More to explore
               </h2>
             </div>
-            <Link to="/shop?filter=new" className="text-sm font-bold text-charcoal underline-offset-4 hover:underline">
-              See everything new →
+            <Link to="/shop" className="text-sm font-bold text-charcoal underline-offset-4 hover:underline">
+              View all products →
             </Link>
           </div>
           <div className="mt-6 grid grid-cols-2 gap-4 lg:grid-cols-3">
-            {newArrivals.map((p) => (
+            {moreToExplore.map((p) => (
               <ProductCard key={p.id} product={p} />
             ))}
           </div>
@@ -270,8 +268,8 @@ export default function Landing() {
             Your glass-skin era starts with one bottle.
           </h2>
           <p className="max-w-[52ch] text-base text-muted-foreground">
-            Join the customers across Uzbekistan building Korean routines with
-            MuDi Beauty 3D. Free delivery on orders over $60.
+            Explore the original products and build a routine that suits you.
+            Local availability and checkout details are being prepared.
           </p>
           <div className="flex flex-wrap justify-center gap-3">
             <Button asChild className="clay-btn h-13 px-8 text-base font-bold">

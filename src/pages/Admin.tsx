@@ -47,7 +47,7 @@ export default function Admin() {
   const { user } = useAuth();
   const [tab, setTab] = useState<TabId>("overview");
 
-  const lowStock = PRODUCTS.filter((p) => p.stock <= 15);
+  const lowStock = PRODUCTS.filter((p) => p.stock != null && p.stock <= 15);
   const revenue = DEMO_ORDERS.filter((o) => o.status !== "Cancelled").reduce((s, o) => s + o.total, 0);
   const aov = revenue / DEMO_ORDERS.filter((o) => o.status !== "Cancelled").length;
 
@@ -171,8 +171,8 @@ export default function Admin() {
                         {p.price == null ? "Price coming soon" : `$${p.price.toFixed(2)}`}
                       </td>
                       <td className="py-3 pr-3">
-                        <span className={cn("font-bold", p.stock <= 15 ? "text-destructive" : "text-charcoal")}>
-                          {p.stock}
+                        <span className={cn("font-bold", p.stock != null && p.stock <= 15 ? "text-destructive" : "text-charcoal")}>
+                          {p.stock ?? "Unconfirmed"}
                         </span>
                       </td>
                       <td className="py-3">
